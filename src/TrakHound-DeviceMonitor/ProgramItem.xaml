@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="TrakHound.DeviceMonitor.ProgramItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TrakHound.DeviceMonitor"
+             xmlns:ui="clr-namespace:TrakHound_UI;assembly=TrakHound-UI"
+             mc:Ignorable="d" 
+             >
+
+    <StackPanel>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Feedrate Override-->
+            <Grid Margin="5,0">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FeedrateOverride}" Value="-1">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+
+                <!--Meter-->
+                <ui:MeterDisplay Height="25" Width="60" IndicatorWidth="20" Value="{Binding FeedrateOverride}" Maximum="1" ValueFormat="P0" HorizontalAlignment="Left" Foreground="White" InactiveLevelBrush="#33ffffff" ActiveLevelBrush="White"/>
+
+                <!--Hover-->
+                <Grid VerticalAlignment="Center">
+                    <Grid.ToolTip>
+                        <TextBlock>
+                       <Run Text="Feedrate Override : "/><Run Text="{Binding FeedrateOverride}"/>
+                        </TextBlock>
+                    </Grid.ToolTip>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Height" Value="25"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#33ffffff"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                </Grid>
+
+            </Grid>
+
+            <!--Program-->
+            <Grid Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,5,0" VerticalAlignment="Center">
+
+                <!--Program Name-->
+                <TextBlock Text="{Binding Program}" Foreground="White" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Program}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!--No Program Loaded-->
+                <TextBlock Text="No Program Loaded" Foreground="#aaffffff" FontSize="10" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Program}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+            </Grid>
+
+        </Grid>
+
+        <!--PathItems-->
+        <ItemsControl ItemsSource="{Binding PathItems}" Margin="5,0"/>
+
+    </StackPanel>
+    
+</UserControl>

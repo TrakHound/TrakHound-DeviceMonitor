@@ -1,0 +1,51 @@
+﻿<!--Copyright (c) 2017 TrakHound Inc., All Rights Reserved.-->
+
+<!--This file is subject to the terms and conditions defined in-->
+<!--file 'LICENSE', which is part of this source code package.-->
+
+<Window x:Class="TrakHound.DeviceMonitor.About"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrakHound.DeviceMonitor"
+        mc:Ignorable="d"
+        Title="About TrakHound DeviceMonitor" Height="200" Width="450" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" Icon="Resources/About_01.png" Topmost="True">
+
+    <StackPanel Margin="15">
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+
+            <Image Source="Resources/trakhound_logo_100px.png" Height="50"/>
+
+            <StackPanel Margin="10,0,0,0">
+                <TextBlock Text="TrakHound" FontSize="16" Margin="0,0,0,-5"/>
+                <TextBlock FontSize="25">
+                    <Run Text="Device"/><Run Text="Monitor" FontWeight="Medium"/>
+                </TextBlock>
+            </StackPanel>
+
+        </StackPanel>
+
+        <!--Version-->
+        <TextBlock>
+            <Run Text="Version"/>
+            <Run Text="{Binding Version}"/>
+        </TextBlock>
+
+        <!--License-->
+        <TextBlock>
+            License:
+            <Hyperlink NavigateUri="https://www.gnu.org/licenses/gpl-3.0.en.html" RequestNavigate="Hyperlink_RequestNavigate">
+                GPL Version 3
+            </Hyperlink>
+        </TextBlock>
+
+        <!--Copyright-->
+        <TextBlock FontSize="10" Margin="0,10,0,0">
+            © 2017 TrakHound Inc., All Rights Reserved
+        </TextBlock>
+
+    </StackPanel>
+
+</Window>

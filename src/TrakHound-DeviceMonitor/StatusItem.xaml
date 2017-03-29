@@ -1,0 +1,400 @@
+﻿<UserControl x:Class="TrakHound.DeviceMonitor.StatusItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TrakHound.DeviceMonitor"
+             xmlns:api_data="clr-namespace:TrakHound.Api.v2.Data;assembly=TrakHound-Api"
+             mc:Ignorable="d" 
+             >
+
+    <StackPanel>
+        <StackPanel.Style>
+            <Style TargetType="StackPanel">
+                <Setter Property="Background" Value="{StaticResource Disabled_Text}"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Connected}" Value="true">
+                        <Setter Property="Background" Value="{StaticResource StatusRed}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding DeviceStatus}" Value="Idle">
+                        <Setter Property="Background" Value="{StaticResource StatusOrange}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding DeviceStatus}" Value="Active">
+                        <Setter Property="Background" Value="{StaticResource StatusGreen}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </StackPanel.Style>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Status Indicator-->
+            <Border Grid.Column="0" Width="25" BorderBrush="#33ffffff" BorderThickness="0,0,1,0">
+
+                <Grid>
+
+                    <!--Icon-->
+                    <Rectangle HorizontalAlignment="Center" VerticalAlignment="Center" Fill="White">
+                        <Rectangle.Style>
+                            <Style TargetType="Rectangle">
+                                <Setter Property="Height" Value="15"/>
+                                <Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Setter Property="OpacityMask" Value="{StaticResource Power_IMG}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Connected}" Value="true">
+                                        <Setter Property="OpacityMask" Value="{StaticResource Alert_IMG}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding DeviceStatus}" Value="Idle">
+                                        <Setter Property="OpacityMask" Value="{StaticResource Idle_IMG}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding DeviceStatus}" Value="Active">
+                                        <Setter Property="OpacityMask" Value="{StaticResource Active_IMG}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Rectangle.Style>
+                    </Rectangle>
+
+                    <!--Hover-->
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ToolTip>
+                            <StackPanel MaxWidth="300">
+                                <TextBlock Text="Device Status" FontWeight="Bold"/>
+                                <TextBlock TextWrapping="Wrap">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding DeviceStatus}" Value="Active">
+                                                    <Setter Property="Text" Value="Device is currently Active"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding DeviceStatus}" Value="Idle">
+                                                    <Setter Property="Text" Value="Device is currently Idle"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding DeviceStatus}" Value="Alert">
+                                                    <Setter Property="Text" Value="Device currently needs Attention"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid.ToolTip>
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Height" Value="25"/>
+                                <Setter Property="Width" Value="25"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#33ffffff"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                    </Grid>
+
+                </Grid>
+
+            </Border>
+
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!--Status Icons-->
+                <StackPanel Orientation="Horizontal">
+
+                    <!--Execution-->
+                    <Grid VerticalAlignment="Center">
+
+                        <!--Icon-->
+                        <Grid VerticalAlignment="Center">
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="OpacityMask" Value="{StaticResource Paused_IMG}" />
+                                    <Setter Property="Background" Value="#fff"/>
+                                    <Setter Property="Height" Value="15"/>
+                                    <Setter Property="Width" Value="15"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Execution}" Value="ACTIVE">
+                                            <Setter Property="OpacityMask" Value="{StaticResource Started_IMG}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Execution}" Value="STOPPED">
+                                            <Setter Property="OpacityMask" Value="{StaticResource Stopped_IMG}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Execution}" Value="UNAVAILABLE">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Execution}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                        </Grid>
+
+                        <!--Hover-->
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ToolTip>
+                                <TextBlock>
+                                        <Run Text="Execution : "/><Run Text="{Binding Execution}"/>
+                                </TextBlock>
+                            </Grid.ToolTip>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Height" Value="25"/>
+                                    <Setter Property="Width" Value="25"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#33ffffff"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                        </Grid>
+
+                    </Grid>
+
+                    <!--Controller Mode-->
+                    <Grid VerticalAlignment="Center">
+
+                        <!--Icon-->
+                        <Grid>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Background" Value="#fff"/>
+                                    <Setter Property="Height" Value="25"/>
+                                    <Setter Property="Width" Value="25"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ControllerMode}" Value="AUTOMATIC">
+                                            <Setter Property="OpacityMask" Value="{StaticResource Auto_IMG}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ControllerMode}" Value="SEMI_AUTOMATIC">
+                                            <Setter Property="OpacityMask" Value="{StaticResource SemiAuto_IMG}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ControllerMode}" Value="MANUAL_DATA_INPUT">
+                                            <Setter Property="OpacityMask" Value="{StaticResource MDI_IMG}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ControllerMode}" Value="MANUAL">
+                                            <Setter Property="OpacityMask" Value="{StaticResource Manual_IMG}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ControllerMode}" Value="EDIT">
+                                            <Setter Property="OpacityMask" Value="{StaticResource Edit_IMG}" />
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding ControllerMode}" Value="UNAVAILABLE">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ControllerMode}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                        </Grid>
+
+                        <!--Hover-->
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ToolTip>
+                                <TextBlock>
+                                        <Run Text="Controller Mode : "/><Run Text="{Binding ControllerMode}"/>
+                                </TextBlock>
+                            </Grid.ToolTip>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Height" Value="25"/>
+                                    <Setter Property="Width" Value="25"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#33ffffff"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                        </Grid>
+
+                    </Grid>
+
+                </StackPanel>
+
+                <!--Status-->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,5,0">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="#fff"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <!--Device Status-->
+                    <TextBlock Text="{Binding DeviceStatus}" Margin="0,0,10,0" FontWeight="Bold"/>
+
+                    <!--Device Status Timer-->
+                    <TextBlock Text="{Binding DeviceStatusTime, StringFormat=hh\\:mm\\:ss}" FontSize="14"/>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Grid>
+
+        <!--ProgramItem-->
+        <ContentControl Content="{Binding ProgramItem}"/>
+        
+        <!--Alarms and Messages-->
+        <Grid Margin="0,2,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Alarms-->
+            <Grid>
+
+                <!--Alarm Count-->
+                <Border Background="White" CornerRadius="0,2,0,0">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Alarms.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    
+                    <Grid>
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <!--Icon-->
+                            <Grid Margin="5,0,0,0">
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Setter Property="OpacityMask" Value="{StaticResource Alert_IMG}" />
+                                        <Setter Property="Background" Value="{StaticResource Disabled_Text}"/>
+                                        <Setter Property="Height" Value="15"/>
+                                        <Setter Property="Width" Value="15"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Connected}" Value="true">
+                                                <Setter Property="Background" Value="{StaticResource StatusRed}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding DeviceStatus}" Value="Idle">
+                                                <Setter Property="Background" Value="{StaticResource StatusOrange}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding DeviceStatus}" Value="Active">
+                                                <Setter Property="Background" Value="{StaticResource StatusGreen}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                            </Grid>
+
+                            <!--Count Text-->
+                            <TextBlock FontSize="10" Margin="5,2">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{StaticResource Disabled_Text}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Connected}" Value="true">
+                                                <Setter Property="Foreground" Value="{StaticResource StatusRed}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding DeviceStatus}" Value="Idle">
+                                                <Setter Property="Foreground" Value="{StaticResource StatusOrange}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding DeviceStatus}" Value="Active">
+                                                <Setter Property="Foreground" Value="{StaticResource StatusGreen}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                                <Run Text="{Binding Alarms.Count, Mode=OneWay}"/>
+                                <Run>
+                                    <Run.Style>
+                                        <Style TargetType="Run">
+                                            <Setter Property="Text" Value="Alarms"/>
+                                            <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Alarms.Count}" Value="1">
+                                                <Setter Property="Text" Value="Alarm"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                        </Style>
+                                    </Run.Style>
+                                </Run>
+                            </TextBlock>
+
+                        </StackPanel>
+                        
+                        <!--Hover-->
+                        <Grid>
+                            <Grid.ToolTip>
+                                <StackPanel>
+                                    <TextBlock Text="Alarm List" FontSize="10"/>
+                                    <Rectangle Fill="{StaticResource Border}" Height="1" Margin="0,5"/>
+                                    <ItemsControl ItemsSource="{Binding Alarms}"/>
+                                </StackPanel>
+                            </Grid.ToolTip>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#33ffffff"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                        </Grid>
+
+                    </Grid>
+
+                </Border>
+
+                <!--All Conditions Normal-->
+                <StackPanel Orientation="Horizontal" Margin="5,2">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Alarms.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+
+                    <!--Checkmark-->
+                    <Grid Margin="0,0,5,0">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="OpacityMask" Value="{StaticResource Status_Normal_IMG}" />
+                                <Setter Property="Background" Value="#aaffffff"/>
+                                <Setter Property="Height" Value="10"/>
+                                <Setter Property="Width" Value="10"/>
+                            </Style>
+                        </Grid.Style>
+                    </Grid>
+
+                    <!--Text-->
+                    <TextBlock Text="Normal" FontSize="10" Foreground="#aaffffff"/>
+
+                </StackPanel>
+
+            </Grid>
+
+            <TextBlock Grid.Column="1" Text="{Binding Message}" Foreground="White" HorizontalAlignment="Right"/>
+
+        </Grid>
+
+    </StackPanel>
+
+</UserControl>
