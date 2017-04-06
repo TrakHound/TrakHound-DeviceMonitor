@@ -470,7 +470,7 @@
                                                 <Style TargetType="ui:TextBox">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Username}" Value="{x:Null}">
+                                                        <DataTrigger Binding="{Binding LoggedIn}" Value="False">
                                                             <Setter Property="IsEnabled" Value="True"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>

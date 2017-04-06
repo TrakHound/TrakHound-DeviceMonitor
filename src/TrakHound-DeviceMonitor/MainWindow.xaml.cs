@@ -29,7 +29,7 @@ namespace TrakHound.DeviceMonitor
 
         private System.Timers.Timer tokenRefreshTimer;
 
-        public static string _apiUrl = "http://localhost";
+        public static string _apiUrl = "http://localhost/";
         public static string _apiToken = null;
 
         private ObservableCollection<DeviceListItem> _deviceListItems;
@@ -504,9 +504,9 @@ namespace TrakHound.DeviceMonitor
                 }
                 else
                 {
-                    LoggedIn = false;
+                    Logout();
+
                     OpenLoginPage();
-                    StopTokenRefreshTimer();
                 }
 
                 LoadDevices();
