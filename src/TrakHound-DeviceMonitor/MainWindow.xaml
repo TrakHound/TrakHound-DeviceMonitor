@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TrakHound_DeviceMonitor"
         xmlns:ui="clr-namespace:TrakHound_UI;assembly=TrakHound-UI"
         mc:Ignorable="d"
-        Title="TrakHound - Device Monitor" Height="600" Width="400" Icon="Resources/trakhound.ico" Closed="Window_Closed" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged">
+        Title="TrakHound - Device Monitor" Height="600" Width="400" Icon="Resources/devicemonitor_logo.ico" Closed="Window_Closed" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged">
     
     <DockPanel>
         
@@ -225,7 +225,7 @@
                                                 <ColumnDefinition Width="auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <!--Login Title-->
+                                            <!--Title-->
                                             <StackPanel Orientation="Horizontal">
                                                 <Rectangle VerticalAlignment="Center" Fill="#888">
                                                     <Rectangle.Resources>
@@ -250,7 +250,7 @@
 
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
 
-                                            <Image Source="Resources/trakhound_logo_100px.png" Height="50"/>
+                                            <Image Source="Resources/devicemonitor_logo_100px.png" Height="50"/>
 
                                             <StackPanel Margin="10,0,0,0">
                                                 <TextBlock Text="TrakHound" FontSize="16" Margin="0,0,0,-5"/>
