@@ -51,7 +51,7 @@
                     <ImageBrush x:Key="Stopped_IMG" Stretch="Uniform" ImageSource="Resources/Stop_02.png" />
 
                     <!--Emergency Stop Icon-->
-                    <!--<ImageBrush x:Key="Estop_IMG" Stretch="Uniform" ImageSource="/TrakHound-Dashboard;component/Resources/Estop_02.png" />-->
+                    <ImageBrush x:Key="Estop_IMG" Stretch="Uniform" ImageSource="Resources/Estop_02.png" />
 
                 </ResourceDictionary>
 

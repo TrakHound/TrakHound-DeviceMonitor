@@ -42,12 +42,12 @@
     <StartupObject>TrakHound_DeviceMonitor.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.3\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.4.5\lib\net40\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -66,6 +66,10 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="TrakHound-Api, Version=1.8.3.1709, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TrakHound-Api.1.8.3.1709\lib\net40\TrakHound-Api.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="TrakHound-UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\TrakHound-UI.dll</HintPath>
@@ -82,13 +86,16 @@
     <Compile Include="AlarmItem.xaml.cs">
       <DependentUpon>AlarmItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DeviceListItem.xaml.cs">
+      <DependentUpon>DeviceListItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StatusItem.xaml.cs">
       <DependentUpon>StatusItem.xaml</DependentUpon>
     </Compile>
-    <Page Include="About.xaml">
+    <None Include="About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </None>
     <Page Include="AlarmItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -97,13 +104,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="DeviceListItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="About.xaml.cs">
+    <None Include="About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -152,6 +163,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -229,12 +243,6 @@
     <Resource Include="Resources\About_01.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TrakHound-Api\src\TrakHound-Api.csproj">
-      <Project>{721bf90b-e72e-4fdf-bb06-3945e25e6dbc}</Project>
-      <Name>TrakHound-Api</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Options_01.png" />
   </ItemGroup>
   <ItemGroup>
@@ -242,6 +250,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\CheckMark_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Forward_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Estop_02.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Dock_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Resize_01.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

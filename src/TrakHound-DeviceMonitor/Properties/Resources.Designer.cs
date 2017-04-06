@@ -133,6 +133,16 @@ namespace TrakHound.DeviceMonitor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Dock_01 {
+            get {
+                object obj = ResourceManager.GetObject("Dock_01", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DryRun_01 {
             get {
                 object obj = ResourceManager.GetObject("DryRun_01", resourceCulture);
@@ -146,6 +156,26 @@ namespace TrakHound.DeviceMonitor.Properties {
         internal static System.Drawing.Bitmap Edit_01 {
             get {
                 object obj = ResourceManager.GetObject("Edit_01", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Estop_02 {
+            get {
+                object obj = ResourceManager.GetObject("Estop_02", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Forward_01 {
+            get {
+                object obj = ResourceManager.GetObject("Forward_01", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -246,6 +276,16 @@ namespace TrakHound.DeviceMonitor.Properties {
         internal static System.Drawing.Bitmap Refresh_01 {
             get {
                 object obj = ResourceManager.GetObject("Refresh_01", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Resize_01 {
+            get {
+                object obj = ResourceManager.GetObject("Resize_01", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

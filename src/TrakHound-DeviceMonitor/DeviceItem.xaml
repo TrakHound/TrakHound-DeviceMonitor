@@ -40,12 +40,29 @@
 
                 <Grid Margin="5,2">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
 
+                    <!--Device Image-->
+                    <Image Source="{Binding DeviceImage}" Width="50" Height="40" Margin="0,5,5,5">
+                        <Image.Effect>
+                            <DropShadowEffect Direction="225" Color="#66000000" ShadowDepth="2" BlurRadius="5" Opacity="0.3"/>
+                        </Image.Effect>
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DeviceImage}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+
                     <!--Description-->
-                    <StackPanel VerticalAlignment="Center">
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
                         <StackPanel.Resources>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="#fff"/>
@@ -63,33 +80,51 @@
                         <!--Device Description-->
                         <TextBlock Text="{Binding Description}" FontSize="10"  Margin="0,2" HorizontalAlignment="Left"/>
 
-                        <!--Manufacturer-->
-                        <TextBlock FontSize="12" FontWeight="SemiBold" Margin="0,2" HorizontalAlignment="Left">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="#fff"/>
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding Manufacturer}" Value="{x:Null}"/>
-                                                <Condition Binding="{Binding Model}" Value="{x:Null}"/>
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
+                        <!--Manufacturer & Model-->
+                        <StackPanel Orientation="Horizontal">
+
+                            <!--Logo-->
+                            <Image Source="{Binding DeviceLogo}" Height="17">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding DeviceLogo}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+
+                            <!--Text-->
+                            <TextBlock FontSize="12" FontWeight="SemiBold" Margin="0,2" HorizontalAlignment="Left">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="#fff"/>
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding Manufacturer}" Value="{x:Null}"/>
+                                                    <Condition Binding="{Binding Model}" Value="{x:Null}"/>
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
                             <Run Text="{Binding Manufacturer}"/>
                             <Run Text="{Binding Model}"/>
-                        </TextBlock>
+                            </TextBlock>
+
+                        </StackPanel>
 
                         <!--Serial-->
-                        <TextBlock Text="{Binding Serial}" FontSize="10" Margin="0,2" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding Serial}" FontSize="10" HorizontalAlignment="Left"/>
 
                     </StackPanel>
 
                     <!--Agent Host-->
-                    <Grid HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Grid Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
 
                         <!--Address Text-->
                         <TextBlock FontSize="10" Foreground="White" Margin="5,2">
@@ -101,6 +136,11 @@
                             <Grid.ToolTip>
                                 <StackPanel MaxWidth="300">
                                     <TextBlock Text="Agent Information" FontSize="10"/>
+
+                                    <!--Device Name-->
+                                    <TextBlock>
+                                        <Run Text="Device Name: "/><Run Text="{Binding DeviceName}" FontWeight="Bold"/>
+                                    </TextBlock>
 
                                     <!--Address-->
                                     <TextBlock>

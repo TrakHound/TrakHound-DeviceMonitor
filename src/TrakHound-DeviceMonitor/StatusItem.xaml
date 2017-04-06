@@ -144,7 +144,7 @@
                         <Grid VerticalAlignment="Center">
                             <Grid.ToolTip>
                                 <TextBlock>
-                                        <Run Text="Execution : "/><Run Text="{Binding Execution}"/>
+                                        <Run Text="Execution : "/><Run Text="{Binding Execution}" FontWeight="Bold"/>
                                 </TextBlock>
                             </Grid.ToolTip>
                             <Grid.Style>
@@ -205,7 +205,7 @@
                         <Grid VerticalAlignment="Center">
                             <Grid.ToolTip>
                                 <TextBlock>
-                                        <Run Text="Controller Mode : "/><Run Text="{Binding ControllerMode}"/>
+                                        <Run Text="Controller Mode : "/><Run Text="{Binding ControllerMode}" FontWeight="Bold"/>
                                 </TextBlock>
                             </Grid.ToolTip>
                             <Grid.Style>
@@ -224,6 +224,54 @@
 
                     </Grid>
 
+                    <!--Emergency Stop-->
+                    <Grid VerticalAlignment="Center">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding EmergencyStop}" Value="TRIGGERED">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+
+                        <!--Icon-->
+                        <Grid VerticalAlignment="Center">
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="OpacityMask" Value="{StaticResource Estop_IMG}" />
+                                    <Setter Property="Background" Value="#fff"/>
+                                    <Setter Property="Height" Value="20"/>
+                                    <Setter Property="Width" Value="20"/>
+                                </Style>
+                            </Grid.Style>
+                        </Grid>
+
+                        <!--Hover-->
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ToolTip>
+                                <TextBlock>
+                                        <Run Text="Emergency Stop : "/><Run Text="{Binding EmergencyStop}" FontWeight="Bold"/>
+                                </TextBlock>
+                            </Grid.ToolTip>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Height" Value="25"/>
+                                    <Setter Property="Width" Value="25"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#33ffffff"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                        </Grid>
+
+                    </Grid>
+                    
                 </StackPanel>
 
                 <!--Status-->

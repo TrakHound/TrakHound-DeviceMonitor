@@ -27,18 +27,33 @@
                     </Style>
                 </StackPanel.Style>
 
-                <TextBlock FontWeight="Bold" FontSize="10" Foreground="#fff">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Tool}" Value="{x:Null}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                    <Run Text="T"/><Run Text="{Binding Tool}"/>
-                </TextBlock>
+                <Grid>
+
+                    <!--Text-->
+                    <TextBlock FontWeight="Bold" FontSize="10" Foreground="#fff" Margin="2">
+                        <Run Text="T"/><Run Text="{Binding Tool}"/>
+                    </TextBlock>
+
+                    <!--Hover-->
+                    <Grid>
+                        <Grid.ToolTip>
+                            <TextBlock>
+                       <Run Text="Tool : "/><Run Text="{Binding Tool}" FontWeight="Bold"/>
+                            </TextBlock>
+                        </Grid.ToolTip>
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#33ffffff"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                    </Grid>
+
+                </Grid>
 
                 <Rectangle Fill="#33ffffff" Width="1" Margin="5,2"/>
 
@@ -56,18 +71,33 @@
                     </Style>
                 </StackPanel.Style>
 
-                <TextBlock FontSize="10" Foreground="#fff">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Line}" Value="{x:Null}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                    <Run Text="N"/><Run Text="{Binding Line}"/>
-                </TextBlock>
+                <Grid>
+
+                    <!--Text-->
+                    <TextBlock FontSize="10" Foreground="#fff" Margin="2">
+                        <Run Text="N"/><Run Text="{Binding Line}"/>
+                    </TextBlock>
+
+                    <!--Hover-->
+                    <Grid>
+                        <Grid.ToolTip>
+                            <TextBlock>
+                       <Run Text="Current Line : "/><Run Text="{Binding Line}" FontWeight="Bold"/>
+                            </TextBlock>
+                        </Grid.ToolTip>
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#33ffffff"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                    </Grid>
+
+                </Grid>
 
                 <Rectangle Fill="#33ffffff" Width="1" Margin="5,2"/>
 
@@ -76,18 +106,41 @@
         </StackPanel>
 
         <!--Current Block-->
-        <TextBlock Grid.Column="1" Text="{Binding Block}" FontSize="10" HorizontalAlignment="Right" Foreground="#fff">
-            <TextBlock.Style>
-                <Style TargetType="TextBlock">
+        <Grid Grid.Column="1">
+            <Grid.Style>
+                <Style TargetType="Grid">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Block}" Value="{x:Null}">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </TextBlock.Style>
-        </TextBlock>
+            </Grid.Style>
 
+            <!--Text-->
+            <TextBlock Text="{Binding Block}" FontSize="10" HorizontalAlignment="Right" Foreground="#fff" Margin="2"/>
+
+            <!--Hover-->
+            <Grid>
+                <Grid.ToolTip>
+                    <TextBlock>
+                       <Run Text="Current Block : "/><Run Text="{Binding Block}" FontWeight="Bold"/>
+                    </TextBlock>
+                </Grid.ToolTip>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#33ffffff"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            </Grid>
+
+        </Grid>
+        
     </Grid>
 
 </UserControl>

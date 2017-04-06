@@ -24,6 +24,8 @@ namespace TrakHound.DeviceMonitor
 
         public string PathId { get; set; }
 
+        public string EmergencyStopId { get; set; }
+
         public string ExecutionId { get; set; }
 
         public string ControllerModeId { get; set; }
@@ -68,6 +70,16 @@ namespace TrakHound.DeviceMonitor
 
         public static readonly DependencyProperty ConnectedProperty =
             DependencyProperty.Register("Connected", typeof(bool), typeof(StatusItem), new PropertyMetadata(false));
+
+
+        public string EmergencyStop
+        {
+            get { return (string)GetValue(EmergencyStopProperty); }
+            set { SetValue(EmergencyStopProperty, value); }
+        }
+
+        public static readonly DependencyProperty EmergencyStopProperty =
+            DependencyProperty.Register("EmergencyStop", typeof(string), typeof(StatusItem), new PropertyMetadata(null));
 
 
         public string Execution
@@ -163,6 +175,9 @@ namespace TrakHound.DeviceMonitor
 
         public void Update(Sample sample)
         {
+            // Emergency Stop
+            if (sample.Id == EmergencyStopId) EmergencyStop = sample.CDATA;
+
             // Execution
             if (sample.Id == ExecutionId) Execution = sample.CDATA;
 
@@ -206,6 +221,7 @@ namespace TrakHound.DeviceMonitor
         public List<string> GetIds()
         {
             var l = new List<string>();
+            if (EmergencyStopId != null) l.Add(EmergencyStopId);
             if (ExecutionId != null) l.Add(ExecutionId);
             if (ControllerModeId != null) l.Add(ControllerModeId);
             if (MessageId != null) l.Add(MessageId);

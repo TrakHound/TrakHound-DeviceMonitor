@@ -3,14 +3,19 @@
 // This file is subject to the terms and conditions defined in
 // file 'LICENSE.txt', which is part of this source code package.
 
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using TrakHound.Api.v2;
 using Requests = TrakHound.Api.v2.Requests;
-using System.Linq;
 
 
 namespace TrakHound.DeviceMonitor
@@ -21,7 +26,7 @@ namespace TrakHound.DeviceMonitor
     public partial class DeviceItem : UserControl
     {
         private ManualResetEvent stop;
-        private int interval = 10000;
+        private int interval = 30000;
         private string _deviceId;
         private bool previousConnected;
         private Requests.Samples.Stream samplesStream;
@@ -136,6 +141,25 @@ namespace TrakHound.DeviceMonitor
             DependencyProperty.Register("Serial", typeof(string), typeof(DeviceItem), new PropertyMetadata(null));
 
 
+        public ImageSource DeviceImage
+        {
+            get { return (ImageSource)GetValue(DeviceImageProperty); }
+            set { SetValue(DeviceImageProperty, value); }
+        }
+
+        public static readonly DependencyProperty DeviceImageProperty =
+            DependencyProperty.Register("DeviceImage", typeof(ImageSource), typeof(DeviceItem), new PropertyMetadata(null));
+
+
+        public ImageSource DeviceLogo
+        {
+            get { return (ImageSource)GetValue(DeviceLogoProperty); }
+            set { SetValue(DeviceLogoProperty, value); }
+        }
+        public static readonly DependencyProperty DeviceLogoProperty =
+            DependencyProperty.Register("DeviceLogo", typeof(ImageSource), typeof(DeviceItem), new PropertyMetadata(null));
+
+
         public string EmergencyStop
         {
             get { return (string)GetValue(EmergencyStopProperty); }
@@ -196,19 +220,19 @@ namespace TrakHound.DeviceMonitor
 
         private void Worker()
         {
-            var model = Requests.Model.Get("http://localhost", _deviceId);
+            var model = Requests.Model.Get(MainWindow._apiUrl, _deviceId, MainWindow._apiToken);
             UpdateModel(model);
 
             do
             {
-                var status = Requests.Status.Get("http://localhost", _deviceId);
+                var status = Requests.Status.Get(MainWindow._apiUrl, _deviceId, MainWindow._apiToken);
                 if (status != null)
                 {
                     if (!stop.WaitOne(0, true) && status.Connected && !previousConnected)
                     {
-                        ThreadPool.QueueUserWorkItem(new WaitCallback(StartSamplesStream));
-                        ThreadPool.QueueUserWorkItem(new WaitCallback(StartActivityStream));
-                        ThreadPool.QueueUserWorkItem(new WaitCallback(StartAlarmStream));
+                        StartActivityStream(null);
+                        StartAlarmStream(null);
+                        StartSamplesStream(null);
                     }
 
                     UpdateStatus(status);
@@ -238,10 +262,26 @@ namespace TrakHound.DeviceMonitor
         {
             if (model != null)
             {
+                byte[] imgBytes = null;
+                byte[] logoBytes = null;
+
+                // Download Images using the TrakHound Images Api
+                if (!string.IsNullOrEmpty(model.Manufacturer))
+                {
+                    logoBytes = DownloadImage("http://images.trakhound.com/device-image?manufacturer=" + model.Manufacturer);
+                    if (!string.IsNullOrEmpty(model.Model)) imgBytes = DownloadImage("http://images.trakhound.com/device-image?manufacturer=" + model.Manufacturer + "&model=" + model.Model);
+                }
+
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
+                    var img = BitmapFromBytes(imgBytes);
+                    if (img != null) DeviceImage = SetImageSize(img, 50, 40);
+
+                    var logo = BitmapFromBytes(logoBytes);
+                    if (logo != null) DeviceLogo = SetImageSize(logo, 0, 17);
+                    else Manufacturer = model.Manufacturer;
+
                     DeviceName = model.Name;
-                    Manufacturer = model.Manufacturer;
                     Model = model.Model;
                     Serial = model.SerialNumber;
 
@@ -251,6 +291,8 @@ namespace TrakHound.DeviceMonitor
                     Api.v2.Data.DataItem controllerMode = null;
 
                     bool multipleStatuses = false;
+
+                    var estop = model.GetDataItems().Find(o => o.Type == "EMERGENCY_STOP");
 
                     // Add Alarm Conditions
                     dataItemIds.AddRange(model.GetDataItems().FindAll(o => o.Category == "CONDITION").Select(o => o.Id));
@@ -267,6 +309,7 @@ namespace TrakHound.DeviceMonitor
 
                                 // Create a new StatusItem control
                                 var statusItem = new StatusItem(path);
+                                if (estop != null) statusItem.EmergencyStopId = estop.Id;
                                 dataItemIds.AddRange(statusItem.GetIds());
                                 StatusItems.Add(statusItem);
                             }
@@ -311,10 +354,12 @@ namespace TrakHound.DeviceMonitor
                             }
 
                             statusItem.ProgramItem = programItem;
+                            if (estop != null) statusItem.EmergencyStopId = estop.Id;
                             dataItemIds.AddRange(statusItem.GetIds());
                             StatusItems.Add(statusItem);
                         } 
                     }
+
 
                     if (samplesStream != null) samplesStream.DataItemIds = dataItemIds.ToArray();
                 }));
@@ -323,7 +368,7 @@ namespace TrakHound.DeviceMonitor
 
         private void StartActivityStream(object o)
         {
-            activityStream = new Requests.Activity.Stream("http://localhost", _deviceId, 1000);
+            activityStream = new Requests.Activity.Stream(MainWindow._apiUrl, _deviceId, 1000, MainWindow._apiToken);
             activityStream.ActivityReceived += Stream_ActivityReceived;
             activityStream.Start();
         }
@@ -359,7 +404,7 @@ namespace TrakHound.DeviceMonitor
 
         private void StartSamplesStream(object o)
         {
-            samplesStream = new Requests.Samples.Stream("http://localhost", _deviceId, 500, dataItemIds.ToArray());
+            samplesStream = new Requests.Samples.Stream(MainWindow._apiUrl, _deviceId, 500, dataItemIds.ToArray(), MainWindow._apiToken);
             samplesStream.SampleReceived += Stream_SampleReceived;
             samplesStream.Start();
         }
@@ -374,7 +419,7 @@ namespace TrakHound.DeviceMonitor
 
         private void StartAlarmStream(object o)
         {
-            alarmStream = new Requests.Alarms.Stream("http://localhost", _deviceId, 2000);
+            alarmStream = new Requests.Alarms.Stream(MainWindow._apiUrl, _deviceId, 2000, MainWindow._apiToken);
             alarmStream.AlarmReceived += Stream_AlarmReceived;
             alarmStream.Start();
         }
@@ -391,6 +436,69 @@ namespace TrakHound.DeviceMonitor
                     }
                 }
             }));
+        }
+
+        private byte[] DownloadImage(string url)
+        {
+            try
+            {
+                var client = new RestClient(url);
+                var request = new RestRequest();
+                return client.DownloadData(request);   
+            }
+            catch (Exception ex)
+            {
+                
+            }            
+
+            return null;
+        }
+
+        private BitmapImage BitmapFromBytes(byte[] bytes)
+        {
+            if (!bytes.IsNullOrEmpty())
+            {
+                using (var stream = new MemoryStream(bytes))
+                {
+                    var img = new BitmapImage();
+                    img.BeginInit();
+                    img.StreamSource = stream;
+                    img.CacheOption = BitmapCacheOption.OnLoad;
+                    img.EndInit();
+                    return img;
+                }
+            }
+
+            return null;
+        }
+
+        public static BitmapImage SetImageSize(ImageSource src, int width, int height)
+        {
+            if (src != null)
+            {
+                var encoder = new PngBitmapEncoder();
+                var stream = new MemoryStream();
+                var img = new BitmapImage();
+                var bmp = src as BitmapSource;
+                if (bmp != null)
+                {
+                    encoder.Frames.Add(BitmapFrame.Create(bmp));
+                    encoder.Save(stream);
+
+                    img.BeginInit();
+                    if (width > 0) img.DecodePixelWidth = width;
+                    if (height > 0) img.DecodePixelHeight = height;
+                    img.StreamSource = new MemoryStream(stream.ToArray());
+                    img.CacheOption = BitmapCacheOption.OnLoad;
+                    img.EndInit();
+
+                    stream.Close();
+
+                    return img;
+                }
+            }
+
+            return null;
         }
     }
 }

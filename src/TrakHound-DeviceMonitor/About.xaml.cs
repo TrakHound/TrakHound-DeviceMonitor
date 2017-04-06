@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Windows;
 using System.Diagnostics;
 
+
 namespace TrakHound.DeviceMonitor
 {
     /// <summary>
