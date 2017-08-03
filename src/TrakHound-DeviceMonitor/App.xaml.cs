@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace TrakHound_DeviceMonitor
+namespace TrakHound.DeviceMonitor
 {
     /// <summary>
     /// Interaction logic for App.xaml

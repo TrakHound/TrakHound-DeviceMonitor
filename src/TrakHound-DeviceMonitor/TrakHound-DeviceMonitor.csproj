@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A35A0F54-DFB6-4025-B1FD-2C2D0A8D4171}</ProjectGuid>
+    <ProjectGuid>{7D46FE66-A514-42C9-AAFE-435784D508A6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TrakHound.DeviceMonitor</RootNamespace>
     <AssemblyName>TrakHound-DeviceMonitor</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,24 +35,30 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\devicemonitor_logo.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>TrakHound_DeviceMonitor.App</StartupObject>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="LiveCharts, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\..\..\TrakHound-Community\src\packages\LiveCharts.0.9.6\lib\net45\LiveCharts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\..\..\TrakHound-Community\src\packages\LiveCharts.Wpf.0.9.6\lib\net45\LiveCharts.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\TrakHound-Community\src\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.3\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\..\..\TrakHound-Community\src\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net4\RestSharp.dll</HintPath>
+      <HintPath>..\..\..\TrakHound-Community\src\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -66,14 +73,6 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="TrakHound-Api, Version=1.8.3.1709, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TrakHound-Api.1.8.3.1709\lib\net40\TrakHound-Api.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="TrakHound-UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\TrakHound-UI.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -83,27 +82,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AlarmItem.xaml.cs">
-      <DependentUpon>AlarmItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DeviceListItem.xaml.cs">
-      <DependentUpon>DeviceListItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="StatusItem.xaml.cs">
-      <DependentUpon>StatusItem.xaml</DependentUpon>
-    </Compile>
-    <Page Include="AlarmItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DeviceItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DeviceListItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -112,32 +90,56 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DeviceItem.xaml.cs">
-      <DependentUpon>DeviceItem.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="DeviceConfiguration.cs" />
+    <Compile Include="DeviceListCheckBox.cs" />
+    <Compile Include="ExtendedObservableCollection.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ProgramItem.xaml">
+    <Page Include="DeviceListItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PathItem.xaml">
+    <Page Include="Pages\Overview\AlarmPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="StatusItem.xaml">
+    <Page Include="Pages\Overview\DevicePanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Overview\PathPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Overview\StatusPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Overview\Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProgramItem.xaml.cs">
-      <DependentUpon>ProgramItem.xaml</DependentUpon>
+    <Compile Include="DeviceListItem.xaml.cs">
+      <DependentUpon>DeviceListItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PathItem.xaml.cs">
-      <DependentUpon>PathItem.xaml</DependentUpon>
+    <Compile Include="Pages\Overview\AlarmPanel.xaml.cs">
+      <DependentUpon>AlarmPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Overview\DevicePanel.xaml.cs">
+      <DependentUpon>DevicePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Overview\PathPanel.xaml.cs">
+      <DependentUpon>PathPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Overview\StatusPanel.xaml.cs">
+      <DependentUpon>StatusPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Overview\Page.xaml.cs">
+      <DependentUpon>Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -152,18 +154,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Resource Include="Resources\devicemonitor_logo.ico" />
-    <Resource Include="Resources\devicemonitor_logo_100px.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -174,13 +169,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Back_01.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\blank_profile_01_sm.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\trakhound.ico" />
+    <Resource Include="Resources\CheckMark_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Off_01_25px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\On_01_25px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Power_01.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Active_01.png" />
@@ -192,7 +193,19 @@
     <Resource Include="Resources\Warning_01.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Power_01.png" />
+    <Resource Include="Resources\Auto_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Edit_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Jog_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\MDI_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SingleBlock_01.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Pause_02.png" />
@@ -204,40 +217,10 @@
     <Resource Include="Resources\Stop_02.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Off_01_25px.png" />
+    <Resource Include="Resources\Estop_02.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\On_01_25px.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Auto_01.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\BlockSkip_01.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\DryRun_01.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Edit_01.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Jog_01.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\MachineLock_01.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\MDI_01.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SingleBlock_01.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\trakhound_logo_100px.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\About_01.png" />
+    <Resource Include="Resources\trakhound.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Options_01.png" />
@@ -246,19 +229,99 @@
     <Resource Include="Resources\Refresh_01.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\CheckMark_01.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Forward_01.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Estop_02.png" />
+    <Resource Include="Resources\Resize_01.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Dock_01.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Resize_01.png" />
+    <Resource Include="Resources\About_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Back_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\dashboard-logo-full_75px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Forward_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Analyse_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Footprint_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\History_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Grid_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\dashboard_logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Plus_04.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Minus_04.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Off_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\On_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Power_01_100px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TrakHound-Api\src\TrakHound-Api.csproj">
+      <Project>{721bf90b-e72e-4fdf-bb06-3945e25e6dbc}</Project>
+      <Name>TrakHound-Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\TrakHound-TempServer\consolidated\TempServer\TrakHound-TempServer.csproj">
+      <Project>{69e6a916-a48a-4f79-a2f0-311a30fbbfe2}</Project>
+      <Name>TrakHound-TempServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\TrakHound-UI\TrakHound-UI.csproj">
+      <Project>{b4c046ff-4a7d-4059-aaf8-713059ccf0f3}</Project>
+      <Name>TrakHound-UI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\X_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Edit_02.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\List_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Carrot_Arrow_Down_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Carrot_Arrow_Up_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Cycle_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Lab_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\devicemonitor-logo-full-75px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\devicemonitor_logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Search_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Add_01.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,12 +1,12 @@
-﻿<Application x:Class="TrakHound_DeviceMonitor.App"
+﻿<Application x:Class="TrakHound.DeviceMonitor.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:TrakHound_DeviceMonitor"
+             xmlns:local="clr-namespace:TrakHound.DeviceMonitor"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary x:Name="ThemeDictionary">
             <ResourceDictionary.MergedDictionaries>
-                
+
                 <ResourceDictionary Source="/TrakHound-UI;component/All.xaml" />
                 <ResourceDictionary Source="/TrakHound-UI;component/Styles/Theme_Light.xaml" />
 
@@ -16,14 +16,14 @@
 
                     <!--<ImageBrush x:Key="Message_IMG" Stretch="Uniform" ImageSource="Resources/Envelope_01.png"/>-->
                     <!--<ImageBrush x:Key="Power_Large_IMG" Stretch="Uniform" ImageSource="/TrakHound-Dashboard;component/Resources/Power_01_100px.png"/>-->
-                    
+
                     <ImageBrush x:Key="Status_Normal_IMG" Stretch="Uniform" ImageSource="Resources/CheckMark_01.png" />
 
                     <!--Availability Icons-->
                     <ImageBrush x:Key="On_IMG" Stretch="Uniform" ImageSource="Resources/On_01_25px.png" />
                     <ImageBrush x:Key="Off_IMG" Stretch="Uniform" ImageSource="Resources/Off_01_25px.png" />
-                    <!--<ImageBrush x:Key="On_Large_IMG" Stretch="Uniform" ImageSource="/TrakHound-Dashboard;component/Resources/On_01.png" />
-                    <ImageBrush x:Key="Off_Large_IMG" Stretch="Uniform" ImageSource="/TrakHound-Dashboard;component/Resources/Off_01.png" />-->
+                    <ImageBrush x:Key="On_Large_IMG" Stretch="Uniform" ImageSource="Resources/On_01.png" />
+                    <ImageBrush x:Key="Off_Large_IMG" Stretch="Uniform" ImageSource="Resources/Off_01.png" />
 
                     <!--Device Status Icons-->
                     <ImageBrush x:Key="Power_IMG" Stretch="Uniform" ImageSource="Resources/Power_01.png"  />
@@ -31,14 +31,15 @@
                     <ImageBrush x:Key="Idle_IMG" Stretch="Uniform" ImageSource="Resources/Hourglass_01.png" />
                     <ImageBrush x:Key="Alert_IMG" Stretch="Uniform" ImageSource="Resources/Warning_01.png" />
 
-                    <!--Production Status Icons--><!--
-                    <ImageBrush x:Key="Production_IMG" Stretch="Uniform" ImageSource="/TrakHound-Dashboard;component/Resources/Cycle_01.png" />
-                    <ImageBrush x:Key="Setup_IMG" Stretch="Uniform" ImageSource="/TrakHound-Dashboard;component/Resources/Carrot_Arrow_Up_01.png" />
-                    <ImageBrush x:Key="Teardown_IMG" Stretch="Uniform" ImageSource="/TrakHound-Dashboard;component/Resources/Carrot_Arrow_Down_01.png" />
-                    <ImageBrush x:Key="Maintenance_IMG" Stretch="Uniform" ImageSource="/TrakHound-Dashboard;component/Resources/Options_01.png" />
-                    <ImageBrush x:Key="ProcessDevelopment_IMG" Stretch="Uniform" ImageSource="/TrakHound-Dashboard;component/Resources/Lab_01.png" />
+                    <!--Production Status Icons-->
+                    <ImageBrush x:Key="Production_IMG" Stretch="Uniform" ImageSource="Resources/Cycle_01.png" />
+                    <ImageBrush x:Key="Setup_IMG" Stretch="Uniform" ImageSource="Resources/Carrot_Arrow_Up_01.png" />
+                    <ImageBrush x:Key="Teardown_IMG" Stretch="Uniform" ImageSource="Resources/Carrot_Arrow_Down_01.png" />
+                    <ImageBrush x:Key="Maintenance_IMG" Stretch="Uniform" ImageSource="Resources/Options_01.png" />
+                    <ImageBrush x:Key="ProcessDevelopment_IMG" Stretch="Uniform" ImageSource="Resources/Lab_01.png" />
 
-                    --><!--Controller Mode Icons-->
+                    
+                    <!--Controller Mode Icons-->
                     <ImageBrush x:Key="Auto_IMG" Stretch="Uniform" ImageSource="Resources/Auto_01.png" />
                     <ImageBrush x:Key="SemiAuto_IMG" Stretch="Uniform" ImageSource="Resources/SingleBlock_01.png" />
                     <ImageBrush x:Key="MDI_IMG" Stretch="Uniform" ImageSource="Resources/MDI_01.png" />

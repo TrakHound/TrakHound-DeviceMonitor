@@ -1,26 +1,45 @@
 ﻿// Copyright (c) 2017 TrakHound Inc., All Rights Reserved.
 
 // This file is subject to the terms and conditions defined in
-// file 'LICENSE.txt', which is part of this source code package.
+// file 'LICENSE', which is part of this source code package.
 
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using TrakHound.Api.v2.Data;
 
-
-namespace TrakHound.DeviceMonitor
+namespace TrakHound.DeviceMonitor.Pages.Overview
 {
     /// <summary>
-    /// Interaction logic for PathItem.xaml
+    /// Interaction logic for OverviewPathPanel.xaml
     /// </summary>
-    public partial class PathItem : UserControl
+    public partial class PathPanel : UserControl
     {
         public string ToolId { get; set; }
 
         public string BlockId { get; set; }
 
         public string LineId { get; set; }
+
+
+        public string PathID
+        {
+            get { return (string)GetValue(PathIDProperty); }
+            set { SetValue(PathIDProperty, value); }
+        }
+
+        public static readonly DependencyProperty PathIDProperty =
+            DependencyProperty.Register("PathID", typeof(string), typeof(PathPanel), new PropertyMetadata(null));
+
+
+        public string PathName
+        {
+            get { return (string)GetValue(PathNameProperty); }
+            set { SetValue(PathNameProperty, value); }
+        }
+
+        public static readonly DependencyProperty PathNameProperty =
+            DependencyProperty.Register("PathName", typeof(string), typeof(PathPanel), new PropertyMetadata(null));
 
 
         public string Tool
@@ -30,7 +49,7 @@ namespace TrakHound.DeviceMonitor
         }
 
         public static readonly DependencyProperty ToolProperty =
-            DependencyProperty.Register("Tool", typeof(string), typeof(PathItem), new PropertyMetadata(null));
+            DependencyProperty.Register("Tool", typeof(string), typeof(PathPanel), new PropertyMetadata(null));
 
 
         public string Block
@@ -40,7 +59,8 @@ namespace TrakHound.DeviceMonitor
         }
 
         public static readonly DependencyProperty BlockProperty =
-            DependencyProperty.Register("Block", typeof(string), typeof(PathItem), new PropertyMetadata(null));
+            DependencyProperty.Register("Block", typeof(string), typeof(PathPanel), new PropertyMetadata(null));
+
 
         public string Line
         {
@@ -49,12 +69,21 @@ namespace TrakHound.DeviceMonitor
         }
 
         public static readonly DependencyProperty LineProperty =
-            DependencyProperty.Register("Line", typeof(string), typeof(PathItem), new PropertyMetadata(null));
+            DependencyProperty.Register("Line", typeof(string), typeof(PathPanel), new PropertyMetadata(null));
 
 
-        public PathItem(ComponentModel path)
+
+        public PathPanel()
         {
             Init();
+        }
+
+        public PathPanel(ComponentModel path)
+        {
+            Init();
+
+            PathID = path.Id;
+            PathName = path.Name;
 
             // Tool
             var obj = path.DataItems.Find(o => o.Type == "TOOL_ID" || o.Type == "TOOL_NUMBER");
@@ -67,12 +96,6 @@ namespace TrakHound.DeviceMonitor
             // Line
             obj = path.DataItems.Find(o => o.Type == "LINE");
             if (obj != null) LineId = obj.Id;
-        }
-
-
-        public PathItem()
-        {
-            Init();
         }
 
         private void Init()

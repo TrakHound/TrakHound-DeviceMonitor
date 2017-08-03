@@ -118,8 +118,14 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="About_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\About_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Active_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Active_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Auto_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Auto_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Back_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Back_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -127,35 +133,29 @@
   <data name="blank_profile_01_sm" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\blank_profile_01_sm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Hourglass_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Hourglass_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="CheckMark_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CheckMark_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Power_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Power_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="dashboard_logo_full_75px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dashboard-logo-full_75px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="trakhound" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\trakhound.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Warning_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Warning_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Auto_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Auto_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="BlockSkip_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BlockSkip_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="DryRun_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\DryRun_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Dock_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Dock_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Edit_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Edit_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Estop_02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Estop_02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Forward_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Forward_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Hourglass_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hourglass_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Jog_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Jog_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="MachineLock_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MachineLock_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="MDI_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MDI_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -166,8 +166,20 @@
   <data name="On_01_25px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\On_01_25px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Options_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Options_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Pause_02" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Pause_02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Power_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Power_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Refresh_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Refresh_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Resize_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Resize_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SingleBlock_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SingleBlock_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -178,37 +190,73 @@
   <data name="Stop_02" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Stop_02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="About_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\About_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="trakhound" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\trakhound.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="trakhound_logo_100px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\trakhound_logo_100px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Warning_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Warning_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Options_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Options_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Analyse_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Analyse_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Refresh_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Refresh_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Footprint_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Footprint_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="CheckMark_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\CheckMark_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Grid_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Grid_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Forward_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Forward_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="History_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\History_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Estop_02" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Estop_02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="dashboard_logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dashboard_logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Dock_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Dock_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Minus_04" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Minus_04.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Resize_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Resize_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Plus_04" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Plus_04.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Off_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Off_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="On_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\On_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Power_01_100px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Power_01_100px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Edit_02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Edit_02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="X_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\X_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="List_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\List_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Carrot_Arrow_Down_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Carrot_Arrow_Down_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Carrot_Arrow_Up_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Carrot_Arrow_Up_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Cycle_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Cycle_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Lab_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Lab_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="devicemonitor_logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\devicemonitor_logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="devicemonitor_logo_100px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\devicemonitor_logo_100px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="devicemonitor_logo_full_75px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\devicemonitor-logo-full-75px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Search_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Search_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Add_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Add_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

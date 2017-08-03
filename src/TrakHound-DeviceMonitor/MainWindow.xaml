@@ -3,31 +3,47 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TrakHound_DeviceMonitor"
+        xmlns:local="clr-namespace:TrakHound.DeviceMonitor"
         xmlns:ui="clr-namespace:TrakHound_UI;assembly=TrakHound-UI"
+        xmlns:overview="clr-namespace:TrakHound.DeviceMonitor.Pages.Overview"
+        xmlns:tempServer="clr-namespace:TrakHound.TempServer.MTConnect;assembly=TrakHound-TempServer"
         mc:Ignorable="d"
-        Title="TrakHound - Device Monitor" Height="600" Width="400" Icon="Resources/devicemonitor_logo.ico" Closed="Window_Closed" SizeChanged="Window_SizeChanged" LocationChanged="Window_LocationChanged">
-    
-    <DockPanel>
         
+        Title="TrakHound - Device Monitor" 
+        Height="850" 
+        Width="1025" 
+        Icon="Resources/devicemonitor_logo.ico" 
+        FontFamily="Helvetica"
+        WindowState="Maximized" 
+        WindowStartupLocation="CenterScreen" 
+        Closing="Window_Closing"
+        >
+
+    <Window.Resources>
+
+        <ImageBrush x:Key="Expand_IMG" Stretch="Uniform" ImageSource="Resources/Forward_01.png" />
+
+    </Window.Resources>
+
+    <DockPanel>
+
         <!--Main Menu-->
         <Menu DockPanel.Dock="Top" Background="Transparent">
             <MenuItem Header="File">
                 <MenuItem Header="Refresh" Click="Refresh_Click"/>
+                <Separator/>
                 <MenuItem Header="Exit" Click="Exit_Click"/>
             </MenuItem>
             <MenuItem Header="Tools">
+                <MenuItem Header="Find Devices" Click="FindDevices_Click"/>
                 <MenuItem Header="Options" Click="Options_Click"/>
-            </MenuItem>
-            <MenuItem Header="Window">
-                <MenuItem Header="Dock" Click="Dock_Click"/>
-                <MenuItem Header="Auto Fit Window" Click="AutoFit_Click"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="About" Click="About_Click"/>
             </MenuItem>
         </Menu>
 
+        <!--Toolbars-->
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -43,78 +59,135 @@
                 <!--Refresh-->
                 <ui:Button Image="Resources/Refresh_01.png" Padding="4,6" Clicked="Refresh_Clicked"/>
 
+                <!--Find Devices-->
+                <ui:Button Image="Resources/Search_01.png" Padding="4,6" Clicked="FindDevices_Clicked"/>
+
                 <!--Options-->
                 <ui:Button Image="Resources/Options_01.png" Padding="4,6" Clicked="Options_Clicked"/>
-
-                <!--Separator-->
-                <Rectangle Fill="{StaticResource Border}" Width="1" Margin="2,5"/>
-
-                <!--User-->
-                <ui:Button Image="Resources/blank_profile_01_sm.png"  MaxImageHeight="15" ImageTextPadding="5" Clicked="LoginMenu_Clicked">
-                    <ui:Button.Style>
-                        <Style TargetType="ui:Button" BasedOn="{StaticResource ToolBar_Button}">
-                            <Setter Property="Text" Value="{Binding Username}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding LoggedIn}" Value="false">
-                                    <Setter Property="Text" Value="Login"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ui:Button.Style>
-                </ui:Button>
 
             </StackPanel>
 
             <!--Right Toolbar-->
             <StackPanel Grid.Column="1" Orientation="Horizontal">
 
+                <!--Selected Timespan-->
+                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+
+                    <!--From-->
+                    <ui:Button Text="From" Style="{StaticResource ToolBar_Button}" VerticalAlignment="Center" Margin="0,0,10,0" ToolTip="Reset (From) time back to Default" Clicked="ResetFromTime_Clicked"/>
+                    <ComboBox MinWidth="150" Height="25" ItemsSource="{Binding FromDateTimes}" SelectedValue="{Binding FromTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+
+                    <!--To-->
+                    <ui:Button Text="To" Style="{StaticResource ToolBar_Button}" VerticalAlignment="Center" Margin="10,0,0,0" ToolTip="Reset (To) time back to Default" Clicked="ResetToTime_Clicked"/>
+                    <ComboBox MinWidth="150" Height="25" ItemsSource="{Binding ToDateTimes}" SelectedValue="{Binding ToTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+
+                </StackPanel>
+
+
                 <!--Separator-->
-                <Rectangle Fill="{StaticResource Border}" Width="1" Margin="2,5"/>
+                <Rectangle Fill="{StaticResource Border}" Width="1" Margin="10,5"/>
 
-                <!--Resize-->
-                <ui:Button Image="Resources/Resize_01.png" Padding="4,6" ToolTip="Auto Fit Window" Clicked="AutoFit_Clicked"/>
+                
+                <!--Zoom Level-->
+                <TextBlock Text="Zoom" FontSize="10" Foreground="{StaticResource Text_Light}" VerticalAlignment="Center"/>
+                
+                <!--Zoom Slider-->
+                <Slider Width="100" Value="{Binding ZoomLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0.25" Maximum="5" LargeChange="0.1" TickFrequency="0.5" TickPlacement="BottomRight" AutomationProperties.HelpText="Page Zoom" Margin="20,0,0,0"/>
 
-                <!--Dock-->
-                <ui:Button Image="Resources/Dock_01.png" Padding="4,6" ToolTip="Dock Window" Clicked="Dock_Clicked"/>
+                <!--Zoom Reset-->
+                <ui:Button Padding="4,6" MinWidth="50" Text="{Binding ZoomLevel, StringFormat=P0}" ToolTip="Reset Zoom" Clicked="ZoomReset_Clicked"/>
+
+                <!--Zoom In-->
+                <ui:Button Image="Resources/Plus_04.png" Padding="4,6" ToolTip="Zoom In" Clicked="ZoomIn_Clicked" Style="{StaticResource ToolBar_Button}"/>
+
+                <!--Zoom Out-->
+                <ui:Button Image="Resources/Minus_04.png" Padding="4,6" ToolTip="Zoom Out" Clicked="ZoomOut_Clicked" Style="{StaticResource ToolBar_Button}"/>
 
             </StackPanel>
 
         </Grid>
 
-        <Border Background="#eee" BorderBrush="{StaticResource Border}" BorderThickness="0,1,0,0">
+        <Border BorderBrush="{StaticResource Border}" BorderThickness="0,1,0,0">
 
             <Grid>
 
-                <!--Device List-->
-                <ScrollViewer VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
-                    <ScrollViewer.Style>
-                        <Style TargetType="ScrollViewer">
+                <!--Overview-->
+                <overview:Page x:Name="overviewPage" ZoomLevel="{Binding ZoomLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <overview:Page.Style>
+                        <Style TargetType="overview:Page">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Loading}" Value="False">
+                                <DataTrigger Binding="{Binding Loading}" Value="false">
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </ScrollViewer.Style>
-                    
-                    <ItemsControl ItemsSource="{Binding DeviceItems}"/>
-                    
-                </ScrollViewer>
+                    </overview:Page.Style>
+                </overview:Page>
 
-                <!--Loading Spinner-->
-                <ui:Spinner Width="50" Height="50" Foreground="{StaticResource TrakHound_Blue}">
-                    <ui:Spinner.Style>
-                        <Style TargetType="ui:Spinner">
-                            <Setter Property="Visibility" Value="Visible"/>
+                <!--No Devices Found-->
+                <Border Background="#FFF">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Loading}" Value="False">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                <DataTrigger Binding="{Binding DeviceListItems.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </ui:Spinner.Style>
-                </ui:Spinner>
+                    </Border.Style>
+
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                       
+                        <!--Label-->
+                        <TextBlock FontSize="14" Foreground="#666666" TextAlignment="Center" HorizontalAlignment="Center">     
+                                            No Devices Found <LineBreak/>
+                                            Click the button below to open the Device Configurator
+                        </TextBlock>
+
+                        <!--Find Devices Button-->
+                        <ui:Button Text="Find Devices" Clicked="FindDevices_Clicked" Style="{StaticResource Button_Accent_Background}" Margin="0,20,0,0" HorizontalAlignment="Center"/>
+
+                        <!--Help Link-->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+
+                            <TextBlock Text="Need help? Check out our" Foreground="#666666"/>
+
+                            <!--Docs Link-->
+                            <TextBlock Grid.Column="1" Text="Docs" MouseDown="Docs_MouseDown" Margin="5,0,0,5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{StaticResource TrakHound_Blue}"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter Property="Foreground" Value="{StaticResource TrakHound_LightBlue}"/>
+                                                <Setter Property="Cursor" Value="Hand"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                        </StackPanel>
+
+                    </StackPanel>
+                </Border>
+
+                <!--Loading-->
+                <Border Background="#CCFFFFFF">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Loading}" Value="true">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <ui:Spinner Width="50" Height="50" Foreground="#0080ff"/>
+                </Border>
 
                 <!--Shaded Panel-->
                 <Border Background="#aa000000" MouseDown="ShadedPanel_MouseDown">
@@ -122,7 +195,7 @@
                         <Style TargetType="Border">
                             <Setter Property="Opacity" Value="0"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding MenuShown}" Value="true">
+                                <DataTrigger Binding="{Binding IsMenuShown}" Value="true">
                                     <DataTrigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
@@ -155,18 +228,18 @@
                 </Border>
 
                 <!--Menu-->
-                <Border HorizontalAlignment="Left">
+                <Border HorizontalAlignment="Right">
                     <Border.RenderTransform>
-                        <TranslateTransform X="-320"/>
+                        <TranslateTransform X="520"/>
                     </Border.RenderTransform>
                     <Border.Style>
                         <Style TargetType="Border">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding MenuShown}" Value="true">
+                                <DataTrigger Binding="{Binding IsMenuShown}" Value="true">
                                     <DataTrigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <DoubleAnimation Duration="00:00:0.2" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" From="-320" To="0" >
+                                                <DoubleAnimation Duration="00:00:0.2" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" From="520" To="0" >
                                                     <DoubleAnimation.EasingFunction>
                                                         <CubicEase EasingMode="EaseOut"/>
                                                     </DoubleAnimation.EasingFunction>
@@ -177,7 +250,7 @@
                                     <DataTrigger.ExitActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <DoubleAnimation Duration="00:00:0.1" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" From="0" To="-320" >
+                                                <DoubleAnimation Duration="00:00:0.1" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" From="0" To="520" >
                                                     <DoubleAnimation.EasingFunction>
                                                         <CubicEase EasingMode="EaseIn"/>
                                                     </DoubleAnimation.EasingFunction>
@@ -189,14 +262,45 @@
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
-                    
-                    <Grid Width="300">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="30"/>
-                        </Grid.ColumnDefinitions>
 
-                        <Border Background="#fff" BorderBrush="#33000000" BorderThickness="0,0,2,0" Padding="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Width" Value="400"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsLargeMenuShown}" Value="true">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="00:00:0.2" Storyboard.TargetProperty="Width" From="400" To="1000" >
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                    <DoubleAnimation Duration="00:00:0.1" Storyboard.TargetProperty="Width" From="1000" To="400" >
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseIn"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+
+                        <Border Grid.Column="1" Background="#FFF" BorderBrush="#33000000" BorderThickness="0,0,2,0" Padding="10">
 
                             <Grid>
 
@@ -206,7 +310,7 @@
                                         <Style TargetType="Grid">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding AboutShown}" Value="True">
+                                                <DataTrigger Binding="{Binding IsAboutShown}" Value="True">
                                                     <Setter Property="Visibility" Value="Visible"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -219,47 +323,33 @@
 
                                     <StackPanel>
 
-                                        <Grid Margin="0,0,0,20">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <!--Title-->
-                                            <StackPanel Orientation="Horizontal">
-                                                <Rectangle VerticalAlignment="Center" Fill="#888">
-                                                    <Rectangle.Resources>
-                                                        <ImageBrush x:Key="About_IMG" Stretch="Uniform" ImageSource="Resources/About_01.png" />
-                                                    </Rectangle.Resources>
-                                                    <Rectangle.Style>
-                                                        <Style TargetType="Rectangle">
-                                                            <Setter Property="Height" Value="18"/>
-                                                            <Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
-                                                            <Setter Property="Margin" Value="0,0,5,0"/>
-                                                            <Setter Property="OpacityMask" Value="{StaticResource About_IMG}"/>
-                                                        </Style>
-                                                    </Rectangle.Style>
-                                                </Rectangle>
-                                                <TextBlock Text="About" FontSize="16" VerticalAlignment="Center"/>
-                                            </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
 
                                             <!--Back Button-->
-                                            <ui:Button Grid.Column="1" Image="Resources/Back_01.png" Height="35" Width="35" Style="{StaticResource Button_Accent_Foreground}" Clicked="Back_Clicked"/>
+                                            <ui:Button Image="Resources/Forward_01.png" Height="35" Width="35" Margin="0,0,10,0" Style="{StaticResource Button_Accent_Foreground}" Clicked="Back_Clicked"/>
 
-                                        </Grid>
+                                            <!--Icon-->
+                                            <Rectangle VerticalAlignment="Center" Fill="#888">
+                                                <Rectangle.Resources>
+                                                    <ImageBrush x:Key="About_IMG" Stretch="Uniform" ImageSource="Resources/About_01.png" />
+                                                </Rectangle.Resources>
+                                                <Rectangle.Style>
+                                                    <Style TargetType="Rectangle">
+                                                        <Setter Property="Height" Value="18"/>
+                                                        <Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
+                                                        <Setter Property="Margin" Value="0,0,5,0"/>
+                                                        <Setter Property="OpacityMask" Value="{StaticResource About_IMG}"/>
+                                                    </Style>
+                                                </Rectangle.Style>
+                                            </Rectangle>
 
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-
-                                            <Image Source="Resources/devicemonitor_logo_100px.png" Height="50"/>
-
-                                            <StackPanel Margin="10,0,0,0">
-                                                <TextBlock Text="TrakHound" FontSize="16" Margin="0,0,0,-5"/>
-                                                <TextBlock FontSize="25">
-                                                    <Run Text="Device"/><Run Text="Monitor" FontWeight="Medium"/>
-                                                </TextBlock>
-                                            </StackPanel>
+                                            <!--Title-->
+                                            <TextBlock Text="About" FontSize="16" VerticalAlignment="Center"/>
 
                                         </StackPanel>
+
+                                        <!--App Logo-->
+                                        <Image Source="Resources/devicemonitor-logo-full-75px.png" Height="50" Margin="0,0,0,15" HorizontalAlignment="Left"/>
 
                                         <!--Version-->
                                         <TextBlock>
@@ -284,94 +374,13 @@
 
                                 </Grid>
 
-                                <!--Login-->
-                                <Grid>
-                                    <Grid.Style>
-                                        <Style TargetType="Grid">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding LoginShown}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Grid.Style>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-
-                                    <StackPanel>
-
-                                        <Grid Margin="0,0,0,20">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <!--Login Title-->
-                                            <StackPanel Orientation="Horizontal">
-                                                <Rectangle VerticalAlignment="Center" Fill="#888">
-                                                    <Rectangle.Resources>
-                                                        <ImageBrush x:Key="User_IMG" Stretch="Uniform" ImageSource="Resources/blank_profile_01_sm.png" />
-                                                    </Rectangle.Resources>
-                                                    <Rectangle.Style>
-                                                        <Style TargetType="Rectangle">
-                                                            <Setter Property="Height" Value="18"/>
-                                                            <Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
-                                                            <Setter Property="Margin" Value="0,0,5,0"/>
-                                                            <Setter Property="OpacityMask" Value="{StaticResource User_IMG}"/>
-                                                        </Style>
-                                                    </Rectangle.Style>
-                                                </Rectangle>
-                                                <TextBlock Text="Login" FontSize="16" VerticalAlignment="Center"/>
-                                            </StackPanel>
-
-                                            <!--Back Button-->
-                                            <ui:Button Grid.Column="1" Image="Resources/Back_01.png" Height="35" Width="35" Style="{StaticResource Button_Accent_Foreground}" Clicked="Back_Clicked"/>
-
-                                        </Grid>
-
-                                        <!--Username-->
-                                        <ui:TextBox Title="Username" Margin="0,0,0,20" Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                        <!--Password-->
-                                        <ui:PasswordBox Title="Password" Margin="0,0,0,20" PasswordText="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-
-                                            <TextBlock Text="New to TrakHound?"/>
-
-                                            <!--Signup Link-->
-                                            <TextBlock Grid.Column="1" Text="Create an Account" MouseDown="Signup_MouseDown" Margin="5,0,0,5">
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="Foreground" Value="{StaticResource TrakHound_Blue}"/>
-                                                        <Style.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="true">
-                                                                <Setter Property="Foreground" Value="{StaticResource TrakHound_LightBlue}"/>
-                                                                <Setter Property="Cursor" Value="Hand"/>
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-
-                                        </StackPanel>
-
-                                        <ui:Button Text="Login" Style="{StaticResource Button_Accent_Background}" Clicked="Login_Clicked"/>
-
-                                    </StackPanel>
-
-                                </Grid>
-                                
                                 <!--Options-->
                                 <Grid>
                                     <Grid.Style>
                                         <Style TargetType="Grid">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding OptionsShown}" Value="True">
+                                                <DataTrigger Binding="{Binding IsOptionsShown}" Value="True">
                                                     <Setter Property="Visibility" Value="Visible"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -379,74 +388,158 @@
                                     </Grid.Style>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
                                         <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
 
-                                        <Grid Margin="0,0,0,20">
+                                        <!--Back Button-->
+                                        <ui:Button Image="Resources/Forward_01.png" Height="35" Width="35" Margin="0,0,10,0" Style="{StaticResource Button_Accent_Foreground}" Clicked="Back_Clicked"/>
+
+                                        <!--Icon-->
+                                        <Rectangle VerticalAlignment="Center" Fill="#888">
+                                            <Rectangle.Resources>
+                                                <ImageBrush x:Key="Options_IMG" Stretch="Uniform" ImageSource="Resources/Options_01.png" />
+                                            </Rectangle.Resources>
+                                            <Rectangle.Style>
+                                                <Style TargetType="Rectangle">
+                                                    <Setter Property="Height" Value="18"/>
+                                                    <Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
+                                                    <Setter Property="Margin" Value="0,0,5,0"/>
+                                                    <Setter Property="OpacityMask" Value="{StaticResource Options_IMG}"/>
+                                                </Style>
+                                            </Rectangle.Style>
+                                        </Rectangle>
+
+                                        <!--Title-->
+                                        <TextBlock Text="Options" FontSize="16" VerticalAlignment="Center"/>
+
+                                    </StackPanel>
+
+                                    <!--Toolbar-->
+                                    <StackPanel Grid.Row="1">
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                            <!--Title-->
+                                            <TextBlock Text="Devices to Monitor" Margin="0,0,20,0" FontSize="12" VerticalAlignment="Center"/>
+
+                                            <ui:Button Text="Enable All" Margin="0,0,10,0" Style="{StaticResource Button_Transparent_Background}" Clicked="DeviceList_EnableAll_Clicked"/>
+                                            <ui:Button Text="Disable All" Style="{StaticResource Button_Transparent_Background}" Clicked="DeviceList_DisableAll_Clicked"/>
+                                        </StackPanel>
+
+                                        <Rectangle Fill="#20000000" Height="1" Margin="0,5"/>
+                                        
+                                    </StackPanel>
+                                    
+                                    <!--Device List-->
+                                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
+                                        <ItemsControl ItemsSource="{Binding DeviceListItems}"/>
+                                    </ScrollViewer>
+
+                                    <!--Manually Add Device-->
+                                    <Border Grid.Row="3" BorderBrush="{StaticResource Border}" BorderThickness="0,1,0,0">
+
+                                        <Grid Margin="15">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <!--Options Title-->
-                                            <StackPanel Orientation="Horizontal">
-                                                <Rectangle VerticalAlignment="Center" Fill="#888">
-                                                    <Rectangle.Resources>
-                                                        <ImageBrush x:Key="Options_IMG" Stretch="Uniform" ImageSource="Resources/Options_01.png" />
-                                                    </Rectangle.Resources>
-                                                    <Rectangle.Style>
-                                                        <Style TargetType="Rectangle">
-                                                            <Setter Property="Height" Value="18"/>
-                                                            <Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
-                                                            <Setter Property="Margin" Value="0,0,5,0"/>
-                                                            <Setter Property="OpacityMask" Value="{StaticResource Options_IMG}"/>
-                                                        </Style>
-                                                    </Rectangle.Style>
-                                                </Rectangle>
-                                                <TextBlock Text="Options" FontSize="16" VerticalAlignment="Center"/>
-                                            </StackPanel>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                </Grid.RowDefinitions>
 
-                                            <!--Back Button-->
-                                            <ui:Button Grid.Column="1" Image="Resources/Back_01.png" Height="35" Width="35" Style="{StaticResource Button_Accent_Foreground}" Clicked="Back_Clicked"/>
+                                                <Label Content="Add a New Device" Foreground="#666666" Margin="0,0,0,5"/>
+
+                                                <Grid Grid.Row="1">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!--Address-->
+                                                    <StackPanel>
+                                                        <Label Content="Address"/>
+                                                        <ui:TextBox Text="{Binding AddDeviceAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Example="127.0.0.1"/>
+                                                    </StackPanel>
+
+                                                    <!--Port-->
+                                                    <StackPanel Grid.Column="1" MinWidth="100" Margin="20,0,0,0">
+                                                        <Label Content="Port"/>
+                                                        <ui:TextBox Text="{Binding AddDevicePort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                    </StackPanel>
+
+                                                </Grid>
+
+                                                <!--Device Name-->
+                                                <StackPanel Grid.Row="2">
+                                                    <Label Content="Device Name"/>
+                                                    <ui:TextBox Text="{Binding AddDeviceName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Example="VMC-3Axis"/>
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                            <!--Add Device Button-->
+                                            <ui:Button Grid.Column="1" Padding="15,8" Margin="20,0,0,0" Text="Add Device" Clicked="AddDevice_Clicked" VerticalAlignment="Bottom" Height="34" Image="Resources/Add_01.png">
+                                                <ui:Button.Style>
+                                                    <Style TargetType="ui:Button" BasedOn="{StaticResource Button_Accent_Background}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding AddDeviceAddress}" Value="{x:Null}">
+                                                                <Setter Property="IsEnabled" Value="false"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding AddDeviceName}" Value="{x:Null}">
+                                                                <Setter Property="IsEnabled" Value="false"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding AddDeviceAddress}" Value="">
+                                                                <Setter Property="IsEnabled" Value="false"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding AddDeviceName}" Value="">
+                                                                <Setter Property="IsEnabled" Value="false"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ui:Button.Style>
+                                            </ui:Button>
 
                                         </Grid>
 
-                                        <!--Login Information-->
-                                        <Border BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="2" Padding="10" Margin="0,0,0,30">
-                                            <Border.Style>
-                                                <Style TargetType="Border">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding LoggedIn}" Value="false">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
+                                    </Border>
 
-                                            <StackPanel>
+                                    <!--No Devices Found-->
+                                    <Border Grid.Row="1" Grid.RowSpan="2" Background="White">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding DeviceListItems.Count}" Value="0">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        
+                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            
+                                            <!--Label-->
+                                            <TextBlock FontSize="14" Foreground="#666666" TextAlignment="Center" HorizontalAlignment="Center">     
+                                            No Devices Found <LineBreak/>
+                                            Click the button below to open the Device Configurator
+                                            </TextBlock>
 
-                                                <!--Username-->
-                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                                    <Rectangle VerticalAlignment="Center" Fill="#888">
-                                                        <Rectangle.Resources>
-                                                            <ImageBrush x:Key="Options_IMG" Stretch="Uniform" ImageSource="Resources/blank_profile_01_sm.png" />
-                                                        </Rectangle.Resources>
-                                                        <Rectangle.Style>
-                                                            <Style TargetType="Rectangle">
-                                                                <Setter Property="Height" Value="18"/>
-                                                                <Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
-                                                                <Setter Property="Margin" Value="0,0,5,0"/>
-                                                                <Setter Property="OpacityMask" Value="{StaticResource Options_IMG}"/>
-                                                            </Style>
-                                                        </Rectangle.Style>
-                                                    </Rectangle>
-                                                    <TextBlock Text="{Binding Username}" FontSize="14" VerticalAlignment="Center"/>
-                                                </StackPanel>
+                                            <!--Open Configurator Button-->
+                                            <ui:Button Text="Find Devices" Clicked="FindDevices_Clicked" Style="{StaticResource Button_Accent_Background}" Margin="0,20,0,0" HorizontalAlignment="Center"/>
 
-                                                <!--Logout Link-->
-                                                <TextBlock Grid.Column="1" Text="Logout" MouseDown="Logout_MouseDown">
+                                            <!--Help Link-->
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+
+                                                <TextBlock Text="Need help? Check out our" Foreground="#666666"/>
+
+                                                <!--Docs Link-->
+                                                <TextBlock Grid.Column="1" Text="Docs" MouseDown="Docs_MouseDown" Margin="5,0,0,5">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
                                                             <Setter Property="Foreground" Value="{StaticResource TrakHound_Blue}"/>
@@ -462,48 +555,142 @@
 
                                             </StackPanel>
 
-                                        </Border>
-
-                                        <!--Custom Api Server-->
-                                        <ui:TextBox Title="Api Server" Margin="0,0,0,20" Text="{Binding ApiUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                            <ui:TextBox.Style>
-                                                <Style TargetType="ui:TextBox">
-                                                    <Setter Property="IsEnabled" Value="False"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding LoggedIn}" Value="False">
-                                                            <Setter Property="IsEnabled" Value="True"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </ui:TextBox.Style>
-                                        </ui:TextBox>
-
-                                        <!--Update Interval-->
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                                            <ui:TextBox Title="Update Interval" Text="{Binding ApiInterval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
-                                            <TextBlock Text="ms" Foreground="{StaticResource Text_Light}" VerticalAlignment="Bottom" Margin="5,0,0,10"/>
                                         </StackPanel>
-                                        
-                                        <!--Title-->
-                                        <TextBlock Text="Devices to Monitor" Margin="0,0,0,10" FontSize="12"/>
+                                    </Border>
 
-                                        <Rectangle Fill="{StaticResource Border}" Height="1" Margin="0,5"/>
+                                </Grid>
 
-                                        <!--DeviceList Toolbar-->
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <!--Find Devices-->
+                                <Grid>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsFindDevicesShown}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
 
-                                            <ui:Button Text="Check All" Margin="0,0,10,0" Style="{StaticResource Button_Transparent_Background}" Clicked="DeviceList_CheckAll_Clicked"/>
+                                    <StackPanel>
 
-                                            <ui:Button Text="Uncheck All" Style="{StaticResource Button_Transparent_Background}" Clicked="DeviceList_UncheckAll_Clicked"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+
+                                            <!--Back Button-->
+                                            <ui:Button Image="Resources/Forward_01.png" Height="35" Width="35" Margin="0,0,10,0" Style="{StaticResource Button_Accent_Foreground}" Clicked="Back_Clicked"/>
+
+                                            <!--Icon-->
+                                            <Rectangle VerticalAlignment="Center" Fill="#888">
+                                                <Rectangle.Resources>
+                                                    <ImageBrush x:Key="Search_IMG" Stretch="Uniform" ImageSource="Resources/Search_01.png" />
+                                                </Rectangle.Resources>
+                                                <Rectangle.Style>
+                                                    <Style TargetType="Rectangle">
+                                                        <Setter Property="Height" Value="18"/>
+                                                        <Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
+                                                        <Setter Property="Margin" Value="0,0,5,0"/>
+                                                        <Setter Property="OpacityMask" Value="{StaticResource Search_IMG}"/>
+                                                    </Style>
+                                                </Rectangle.Style>
+                                            </Rectangle>
+
+                                            <!--Title-->
+                                            <TextBlock Text="Find Devices" FontSize="16" VerticalAlignment="Center"/>
 
                                         </StackPanel>
 
                                     </StackPanel>
 
+                                    <!--Toolbar-->
+                                    <StackPanel Grid.Row="1">
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                            <ui:Button Text="Search for Devices" Clicked="SearchForDevices_Clicked" Style="{StaticResource Button_Accent_Background}"/>
+                                            <ui:Button Text="Add All" Clicked="FindDevicesAddAll_Clicked" Style="{StaticResource Button_Transparent_Background}" Margin="20,0,0,0"/>
+                                        </StackPanel>
+
+                                        <Rectangle Fill="#20000000" Height="1" Margin="0,5"/>
+
+                                    </StackPanel>
+
                                     <!--Device List-->
-                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
-                                        <ItemsControl ItemsSource="{Binding DeviceListItems}"/>
+                                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
+                                        <ScrollViewer.Style>
+                                            <Style TargetType="ScrollViewer">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding MTConnectDeviceItems.Count}" Value="0">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ScrollViewer.Style>
+                                        <DataGrid ItemsSource="{Binding MTConnectDeviceItems}" AutoGenerateColumns="False" HeadersVisibility="Column" SelectionMode="Extended">
+                                            <DataGrid.Resources>
+                                                <Style TargetType="local:DeviceListCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
+                                            </DataGrid.Resources>
+
+                                            <DataGrid.Columns>
+
+                                                <!--Selected CheckBox-->
+                                                <DataGridTemplateColumn Width="65">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ui:Button Text="Add" Margin="0,2" Style="{StaticResource Button_Transparent_Background}" DataObject="{Binding }" Clicked="FindDevicesAdd_Clicked"/>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+
+                                                <!--Description Columns-->
+                                                <DataGridTextColumn Header="Device Name" Binding="{Binding DeviceName}" Width="*"/>
+                                                <DataGridTextColumn Header="Port" Binding="{Binding Port}" Width="*"/>
+                                                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="*"/>
+                                                <DataGridTextColumn Header="Physical Address" Binding="{Binding PhysicalAddress}" Width="*"/>
+
+                                            </DataGrid.Columns>
+
+                                        </DataGrid>
                                     </ScrollViewer>
+
+                                    <!--No Devices Found-->
+                                    <TextBlock Grid.Row="2" Text="No new MTConnect devices found" Foreground="#666666" FontSize="14" TextAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding MTConnectDeviceItems.Count}" Value="0">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding FindDevicesLoading}" Value="true">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <!--Loading-->
+                                    <Border Background="White" Grid.Row="1" Grid.RowSpan="2">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding FindDevicesLoading}" Value="true">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <ui:Spinner Width="50" Height="50" Foreground="#0080ff" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                                            <TextBlock Text="Searching for MTConnect devices on the network. This make take a few minutes." Foreground="#666" FontSize="14" TextAlignment="Center" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
 
                                 </Grid>
 
@@ -518,7 +705,7 @@
             </Grid>
 
         </Border>
-        
+
     </DockPanel>
-    
+
 </Window>

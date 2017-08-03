@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrakHound-DeviceMonitor", "TrakHound-DeviceMonitor\TrakHound-DeviceMonitor.csproj", "{A35A0F54-DFB6-4025-B1FD-2C2D0A8D4171}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrakHound-DeviceMonitor", "TrakHound-DeviceMonitor\TrakHound-DeviceMonitor.csproj", "{7D46FE66-A514-42C9-AAFE-435784D508A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A35A0F54-DFB6-4025-B1FD-2C2D0A8D4171}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A35A0F54-DFB6-4025-B1FD-2C2D0A8D4171}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A35A0F54-DFB6-4025-B1FD-2C2D0A8D4171}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A35A0F54-DFB6-4025-B1FD-2C2D0A8D4171}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D46FE66-A514-42C9-AAFE-435784D508A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D46FE66-A514-42C9-AAFE-435784D508A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D46FE66-A514-42C9-AAFE-435784D508A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D46FE66-A514-42C9-AAFE-435784D508A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

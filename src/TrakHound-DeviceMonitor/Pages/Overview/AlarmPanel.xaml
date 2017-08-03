@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="TrakHound.DeviceMonitor.Pages.Overview.AlarmPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TrakHound.DeviceMonitor.Pages.Overview"
+             mc:Ignorable="d" 
+             d:DesignWidth="300">
+
+    <Grid MinHeight="22">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--DataItem ID-->
+        <Border Padding="5,2" Margin="1" Background="#10000000">
+            <TextBlock Text="{Binding DataItemId}" Foreground="{StaticResource Text}" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+
+        <!--Value-->
+        <Border Grid.Column="1" Padding="5,2" Margin="1">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Condition}" Value="NORMAL">
+                            <Setter Property="Background" Value="{StaticResource StatusGreen}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Condition}" Value="WARNING">
+                            <Setter Property="Background" Value="{StaticResource StatusOrange}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Condition}" Value="FAULT">
+                            <Setter Property="Background" Value="{StaticResource StatusRed}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!--Icon-->
+                <Rectangle Width="15" Height="15" VerticalAlignment="Top">
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Setter Property="Fill" Value="White"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Condition}" Value="NORMAL">
+                                    <Setter Property="OpacityMask" Value="{StaticResource Status_Normal_IMG}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Condition}" Value="WARNING">
+                                    <Setter Property="OpacityMask" Value="{StaticResource Alert_IMG}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Condition}" Value="FAULT">
+                                    <Setter Property="OpacityMask" Value="{StaticResource Alert_IMG}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
+
+                <!--Message-->
+                <TextBlock Grid.Column="1" Text="{Binding Message}" FontSize="10" VerticalAlignment="Center" Margin="5,0,0,0" TextWrapping="Wrap">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Message}" Value="UNAVAILABLE">
+                                    <Setter Property="Foreground" Value="#33000000"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+            </Grid>
+
+        </Border>
+
+    </Grid>
+
+</UserControl>

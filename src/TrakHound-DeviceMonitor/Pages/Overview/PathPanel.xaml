@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="TrakHound.DeviceMonitor.Pages.Overview.PathPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             >
+    
+    <Grid Height="25">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="White"/>
+            </Style>
+        </Grid.Resources>
+
+        <!--Path-->
+        <Border Grid.Column="0" Background="#10000000" Padding="10,0" Margin="1" MinWidth="50">
+            <TextBlock FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#888">
+                <Run Text="{Binding PathID}"/> : <Run Text="{Binding PathName}"/>
+            </TextBlock>
+        </Border>
+
+        <!--Tool-->
+        <Border Grid.Column="4" Background="#10000000" Padding="10,0" Margin="1" MinWidth="50">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Tool}" Value="UNAVAILABLE">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Tool}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                <!--Label-->
+                <TextBlock Text="Tool" FontSize="10" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#888"/>
+
+                <!--Value-->
+                <TextBlock Text="{Binding Tool}" FontSize="16" Foreground="#333"/>
+
+            </StackPanel>
+        </Border>
+
+        <!--Line-->
+        <Border Grid.Column="5" Background="#10000000" Padding="10,0" Margin="1" MinWidth="50">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Line}" Value="UNAVAILABLE">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Line}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#333">
+                <Run Text="N"/><Run Text="{Binding Line}"/>
+            </TextBlock>
+        </Border>
+
+        <!--Block-->
+        <Border Grid.Column="6" Background="#10000000" Padding="10,0" Margin="1">
+            <TextBlock Text="{Binding Block}" FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#333"/>
+        </Border>
+
+    </Grid>
+    
+</UserControl>
