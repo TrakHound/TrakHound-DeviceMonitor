@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TempServer>
+  
+  <Prefixes>
+    <Prefix>http://localhost:8478/</Prefix>
+  </Prefixes>
+  
+</TempServer>
