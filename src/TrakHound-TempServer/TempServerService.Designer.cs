@@ -33,8 +33,11 @@ namespace TrakHound.TempServer
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.ServiceName = "TempServerService";
+            // 
+            // TempServerService
+            // 
+            this.ServiceName = "TrakHound-TempServer";
+
         }
 
         #endregion

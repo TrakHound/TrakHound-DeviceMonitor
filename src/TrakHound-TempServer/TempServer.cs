@@ -412,29 +412,32 @@ namespace TrakHound.TempServer
 
         private void StartMTConnectConnection(MTConnect.MTConnectConnection connection)
         {
-            connection.AgentReceived += AgentReceived;
-            connection.DeviceReceived += DeviceReceived;
-            connection.ComponentsReceived += ComponentsReceived;
-            connection.DataItemsReceived += DataItemsReceived;
-            connection.SamplesReceived += SamplesReceived;
-            connection.AssetsReceived += AssetsReceived;
-            connection.StatusUpdated += StatusUpdated;
-
-            lock (_lock)
+            if (connection.Enabled)
             {
-                if (!storedConnections.Exists(o => o.DeviceId == connection.DeviceId))
-                {
-                    var connectionDefinition = new ConnectionDefinition();
-                    connectionDefinition.DeviceId = connection.DeviceId;
-                    connectionDefinition.Address = connection.Address;
-                    connectionDefinition.Port = connection.Port;
-                    connectionDefinition.PhysicalAddress = connection.PhysicalAddress;
-                    storedConnections.Add(connectionDefinition);
-                }
-            }                
+                connection.AgentReceived += AgentReceived;
+                connection.DeviceReceived += DeviceReceived;
+                connection.ComponentsReceived += ComponentsReceived;
+                connection.DataItemsReceived += DataItemsReceived;
+                connection.SamplesReceived += SamplesReceived;
+                connection.AssetsReceived += AssetsReceived;
+                connection.StatusUpdated += StatusUpdated;
 
-            // Add to Start Queue (to prevent all Connections from starting at once and using too many resources)
-            connectionStartQueue.Add(connection);
+                lock (_lock)
+                {
+                    if (!storedConnections.Exists(o => o.DeviceId == connection.DeviceId))
+                    {
+                        var connectionDefinition = new ConnectionDefinition();
+                        connectionDefinition.DeviceId = connection.DeviceId;
+                        connectionDefinition.Address = connection.Address;
+                        connectionDefinition.Port = connection.Port;
+                        connectionDefinition.PhysicalAddress = connection.PhysicalAddress;
+                        storedConnections.Add(connectionDefinition);
+                    }
+                }
+
+                // Add to Start Queue (to prevent all Connections from starting at once and using too many resources)
+                connectionStartQueue.Add(connection);
+            }
         }
 
         private void ConnectionStartQueue_ConnectionStarted(MTConnect.MTConnectConnection connection)

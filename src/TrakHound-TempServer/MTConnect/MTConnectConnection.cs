@@ -63,6 +63,10 @@ namespace TrakHound.TempServer.MTConnect
             }
         }
 
+        [XmlAttribute("enabled")]
+        [JsonProperty("enabled")]
+        public bool Enabled { get; set; }
+
         private string _address;
         /// <summary>
         /// Gets the Address for the MTConnect Agent. Read Only.
@@ -148,6 +152,7 @@ namespace TrakHound.TempServer.MTConnect
             }
         }
 
+
         /// <summary>
         /// Event raised when a new Agent is read.
         /// </summary>
@@ -184,7 +189,10 @@ namespace TrakHound.TempServer.MTConnect
         internal event StatusHandler StatusUpdated;
 
 
-        public MTConnectConnection() { }
+        public MTConnectConnection()
+        {
+            Enabled = true;
+        }
 
         public MTConnectConnection(string deviceId, string address, int port, string physicalAddress, string deviceName)
         {
@@ -198,6 +206,7 @@ namespace TrakHound.TempServer.MTConnect
 
         private void Init(string deviceId, string address, int port, string physicalAddress, string deviceName, int interval)
         {
+            Enabled = true;
             _deviceId = deviceId;
             _address = address;
             _physicalAddress = physicalAddress;
@@ -453,11 +462,17 @@ namespace TrakHound.TempServer.MTConnect
             obj.Iso841Class = device.Iso841Class;
             if (device.Description != null)
             {
-                obj.Manufacturer = device.Description.Manufacturer;
+                // Check if pointing to the MTConnect Demo at http://agent.mtconnect.org
+                if (device.Description.Manufacturer == "SystemInsights") obj.Description = "MTConnect Demo";
+                else
+                {
+                    obj.Manufacturer = device.Description.Manufacturer;
+                    obj.Description = device.Description.CDATA;
+                }
+
                 obj.Model = device.Description.Model;
                 obj.SerialNumber = device.Description.SerialNumber;
                 obj.Station = device.Description.Station;
-                obj.Description = device.Description.CDATA;
             }
 
             return obj;

@@ -126,7 +126,7 @@
                 </overview:Page>
 
                 <!--No Devices Found-->
-                <Border Background="#FFF">
+                <Border Background="White">
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -175,7 +175,7 @@
                 </Border>
 
                 <!--Loading-->
-                <Border Background="#CCFFFFFF">
+                <Border Background="White">
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Visibility" Value="Collapsed"/>

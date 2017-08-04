@@ -364,7 +364,6 @@ namespace TrakHound.DeviceMonitor
                                         overviewPage.AddDevice(model, index);
                                     }
 
-                                    SaveDeviceList();
                                 }), System.Windows.Threading.DispatcherPriority.Background, null);
                             }
                         });
@@ -376,6 +375,7 @@ namespace TrakHound.DeviceMonitor
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
                         overviewPage.SortDevices();
+                        SaveDeviceList();
                         Loading = false;
 
                     }), System.Windows.Threading.DispatcherPriority.Background, null);
@@ -516,7 +516,11 @@ namespace TrakHound.DeviceMonitor
 
         private void Options_Click(object sender, RoutedEventArgs e) { OpenOptionsPage(); }
 
-        private void FindDevices_Click(object sender, RoutedEventArgs e) { OpenFindDevicesPage(); }
+        private void FindDevices_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFindDevicesPage();
+            SearchForDevices();
+        }
 
         #endregion
 
@@ -526,7 +530,11 @@ namespace TrakHound.DeviceMonitor
 
         private void Options_Clicked(TrakHound_UI.Button bt) { OpenOptionsPage(); }
 
-        private void FindDevices_Clicked(TrakHound_UI.Button bt) { OpenFindDevicesPage(); }
+        private void FindDevices_Clicked(TrakHound_UI.Button bt)
+        {
+            OpenFindDevicesPage();
+            SearchForDevices();
+        }
 
         private void Back_Clicked(TrakHound_UI.Button bt) { HideMenu(); }
 
