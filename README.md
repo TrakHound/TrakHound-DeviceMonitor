@@ -11,7 +11,11 @@ Get started with IIoT by running the TrakHound DeviceMonitor dashboard to view a
 - Easy to read dashboard
 - View OEE and part count for the past 24 hours
 
-![Overview](images/overview-02.png)
+![Overview](images/overview-02.PNG)
+
+![Options](images/options-02.PNG)
+
+![Find Devices](images/find-devices-01.PNG)
 
 
 **Requirements**
