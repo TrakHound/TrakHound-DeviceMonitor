@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://shemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="clr-namespace:TrakHound_UI;assembly=TrakHound-UI"
              mc:Ignorable="d" 
              BorderBrush="{StaticResource Border}"
              BorderThickness="0,0,0,1"
@@ -14,6 +15,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="auto" MinWidth="300"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
         <Grid.Style>
@@ -135,8 +137,8 @@
         <Border Grid.Column="2" Margin="10,0,0,0" Padding="10,0" BorderBrush="#10000000" BorderThickness="1,0,0,0">
             <StackPanel VerticalAlignment="Center">
 
-                <!--Enabled-->
-                <CheckBox Content="Enabled" IsChecked="{Binding Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <!--Show-->
+                <CheckBox Content="Show" IsChecked="{Binding Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="0,0,10,0"/>
 
                 <StackPanel Orientation="Horizontal">
 
@@ -151,7 +153,25 @@
             </StackPanel>
              
         </Border>
-        
+
+        <!--Remove Button-->
+        <Border Grid.Column="3" Margin="10,0,0,0" Padding="10,0" BorderBrush="#10000000" BorderThickness="1,0,0,0">
+            <ui:Button Text="Remove" Image="Resources/X_01.png" Clicked="Remove_Clicked" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <ui:Button.Style>
+                    <Style TargetType="ui:Button" BasedOn="{StaticResource Button_Transparent_Background}">
+                        <Setter Property="ImageForeground" Value="Red"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" Value="Red"/>
+                                <Setter Property="ImageForeground" Value="White"/>
+                                <Setter Property="TextForeground" Value="White"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:Button.Style>
+            </ui:Button>
+        </Border>
+
     </Grid>
 
 </UserControl>

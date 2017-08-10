@@ -6,16 +6,16 @@
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using TrakHound.Api.v2;
-using TrakHound.Api.v2.Events;
-using TrakHound.Api.v2.Data;
 using System.Threading;
-using System.IO;
+using TrakHound.Api.v2;
+using TrakHound.Api.v2.Data;
+using TrakHound.Api.v2.Events;
 
 namespace TrakHound.TempServer
 {
@@ -25,19 +25,17 @@ namespace TrakHound.TempServer
     public class Server
     {
         private const int TIMESPAN = 86400 * 1000; // 24 Hours in Milliseconds
-        //private const int TIMESPAN = 150 * 1000; // 2.5 Minutes in Milliseconds
 
         private static Logger log = LogManager.GetCurrentClassLogger();
 
-        internal static object _lock = new object();
         private int devicesFound = 0;
         private MTConnect.DeviceFinder.MTConnectDevice foundDevice;
         private MTConnect.MTConnectConnectionStartQueue connectionStartQueue = new MTConnect.MTConnectConnectionStartQueue();
         private List<MTConnect.DeviceFinder.MTConnectDeviceFinder> deviceFinders = new List<MTConnect.DeviceFinder.MTConnectDeviceFinder>();
-
         private System.Timers.Timer backupTimer;
         private DateTime lastBackupTime;
 
+        internal static object _lock = new object();
         internal static List<ConnectionDefinition> storedConnections = new List<ConnectionDefinition>();
         internal static List<AgentDefinition> storedAgents = new List<AgentDefinition>();
         internal static List<DeviceDefinition> storedDevices = new List<DeviceDefinition>();
@@ -72,10 +70,14 @@ namespace TrakHound.TempServer
         /// </summary>
         public Configuration Configuration { get { return _configuration; } }
 
+        public List<MTConnect.MTConnectConnection> Connections = new List<MTConnect.MTConnectConnection>();
+
 
         public Server(Configuration config)
         {
             _configuration = config;
+
+            storedStatus.Clear();
 
             Database.Initialize();
 
@@ -169,7 +171,7 @@ namespace TrakHound.TempServer
                     {
                         lock (_lock)
                         {
-                            if (!storedSamples.Exists(x => x.DeviceId == sample.DeviceId && x.Id == sample.Id && x.Timestamp == sample.Timestamp))
+                            if (sample != null && !storedSamples.Exists(x => x != null && x.DeviceId == sample.DeviceId && x.Id == sample.Id && x.Timestamp == sample.Timestamp))
                             {
                                 storedSamples.Add(sample);
                             }
@@ -227,7 +229,7 @@ namespace TrakHound.TempServer
 
         internal static ConnectionDefinition ReadConnection(string deviceId)
         {
-            lock(_lock)
+            lock (_lock)
             {
                 return storedConnections.Find(o => o.DeviceId == deviceId);
             }
@@ -281,13 +283,14 @@ namespace TrakHound.TempServer
             lock (_lock)
             {
                 ids = storedDataItems.FindAll(o => o.DeviceId == deviceId).Select(o => o.Id).ToList();
-                sortedSamples.AddRange(currentSamples);
-                sortedSamples.AddRange(storedSamples);
-                sortedSamples = sortedSamples.OrderBy(o => o.Timestamp).ToList();
+                if (!currentSamples.IsNullOrEmpty()) sortedSamples.AddRange(currentSamples);
+                if (!storedSamples.IsNullOrEmpty()) sortedSamples.AddRange(storedSamples);
             }
 
             if (!ids.IsNullOrEmpty() && !sortedSamples.IsNullOrEmpty())
             {
+                sortedSamples = sortedSamples.OrderBy(o => o.Timestamp).ToList();
+
                 var samples = new List<Sample>();
 
                 foreach (var id in ids)
@@ -313,13 +316,14 @@ namespace TrakHound.TempServer
         }
 
 
-        private void StartMTConnectDevices()
+        public void StartMTConnectDevices()
         {
             connectionStartQueue.Start();
             if (_configuration.Devices.Count > 0)
             {
-                foreach (var device in _configuration.Devices)
+                for (var i = 0; i < _configuration.Devices.Count; i++)
                 {
+                    var device = _configuration.Devices[i];
                     log.Info("Device Read : " + device.DeviceId + " : " + device.DeviceName + " : " + device.Address + " : " + device.Port);
                     StartMTConnectConnection(device);
                 }
@@ -330,37 +334,48 @@ namespace TrakHound.TempServer
             }
         }
 
+        public void StopMTConnectDevices()
+        {
+            lock (_lock)
+            {
+                foreach (var connection in Connections)
+                {
+                    StopMTConnectConnection(connection.DeviceId);
+                }
+            }
+        }
+
         private void StartMTConnectDeviceFinders()
         {
+            var deviceFinders = new List<MTConnect.DeviceFinder.MTConnectDeviceFinder>();
+
+            if (_configuration.DeviceFinders == null || _configuration.DeviceFinders.Count < 1)
+            {
+                // Find All NetworkInterfaces
+                var interfaces = NetworkInterface.GetAllNetworkInterfaces();
+                if (interfaces != null)
+                {
+                    foreach (var ni in interfaces)
+                    {
+                        if (ni.OperationalStatus == OperationalStatus.Up && (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet))
+                        {
+                            var deviceFinder = new MTConnect.DeviceFinder.MTConnectDeviceFinder(ni.Id, ni.Description);
+                            deviceFinders.Add(deviceFinder);
+                            _configuration.DeviceFinders.Add(deviceFinder);
+                        }
+                    }
+
+                    _configuration.Save();
+                }
+            }
+            else
+            {
+                // Add pre configured DeviceFinders that were read from the configuration file
+                foreach (var deviceFinder in _configuration.DeviceFinders) deviceFinders.Add(deviceFinder);
+            }
+
             if (_configuration.DeviceFinderEnabled)
             {
-                var deviceFinders = new List<MTConnect.DeviceFinder.MTConnectDeviceFinder>();
-
-                if (_configuration.DeviceFinders == null || _configuration.DeviceFinders.Count < 1)
-                {
-                    // Find All NetworkInterfaces
-                    var interfaces = NetworkInterface.GetAllNetworkInterfaces();
-                    if (interfaces != null)
-                    {
-                        foreach (var ni in interfaces)
-                        {
-                            if (ni.OperationalStatus == OperationalStatus.Up && (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet))
-                            {
-                                var deviceFinder = new MTConnect.DeviceFinder.MTConnectDeviceFinder(ni.Id, ni.Description);
-                                deviceFinders.Add(deviceFinder);
-                                _configuration.DeviceFinders.Add(deviceFinder);
-                            }
-                        }
-
-                        _configuration.Save();
-                    }
-                }
-                else
-                {
-                    // Add pre configured DeviceFinders that were read from the configuration file
-                    foreach (var deviceFinder in _configuration.DeviceFinders) deviceFinders.Add(deviceFinder);
-                }
-
                 foreach (var deviceFinder in deviceFinders)
                 {
                     deviceFinder.DeviceFound += DeviceFinder_DeviceFound;
@@ -385,7 +400,7 @@ namespace TrakHound.TempServer
         private void DeviceFinder_DeviceFound(MTConnect.DeviceFinder.MTConnectDeviceFinder deviceFinder, MTConnect.DeviceFinder.MTConnectDevice device)
         {
             foundDevice = device;
-            if (AddConnection(device)) devicesFound++;        
+            if (AddConnection(device)) devicesFound++;
         }
 
 
@@ -410,7 +425,7 @@ namespace TrakHound.TempServer
             return false;
         }
 
-        private void StartMTConnectConnection(MTConnect.MTConnectConnection connection)
+        public void StartMTConnectConnection(MTConnect.MTConnectConnection connection)
         {
             if (connection.Enabled)
             {
@@ -424,6 +439,8 @@ namespace TrakHound.TempServer
 
                 lock (_lock)
                 {
+                    if (!Connections.Exists(o => o.DeviceId == connection.DeviceId)) Connections.Add(connection);
+
                     if (!storedConnections.Exists(o => o.DeviceId == connection.DeviceId))
                     {
                         var connectionDefinition = new ConnectionDefinition();
@@ -440,6 +457,23 @@ namespace TrakHound.TempServer
             }
         }
 
+        public void StopMTConnectConnection(string deviceId)
+        {
+            lock (_lock)
+            {
+                var i = Connections.FindIndex(o => o.DeviceId == deviceId);
+                if (i >= 0)
+                {
+                    Connections[i].Stop();
+                    Connections.RemoveAt(i);
+                    log.Info("MTConnect Connection Stopped : " + deviceId);
+                }
+
+                i = storedStatus.FindIndex(o => o.DeviceId == deviceId);
+                if (i >= 0) storedStatus.RemoveAt(i);
+            }
+        }
+
         private void ConnectionStartQueue_ConnectionStarted(MTConnect.MTConnectConnection connection)
         {
             log.Info("MTConnect Connection Started : " + connection.DeviceId + " : " + connection.DeviceName + " : " + connection.Address + " : " + connection.Port);
@@ -449,7 +483,7 @@ namespace TrakHound.TempServer
         private void AgentReceived(MTConnect.MTConnectConnection connection, AgentDefinition agent)
         {
             eventDataItems.Add(new EventDataItems(agent.DeviceId, agent.Version));
-            
+
             lock (_lock)
             {
                 var i = storedAgents.FindIndex(o => o.DeviceId == agent.DeviceId);
@@ -532,7 +566,7 @@ namespace TrakHound.TempServer
 
             UpdateEventDataItems(connection.DeviceId);
         }
-   
+
         private void SamplesReceived(MTConnect.MTConnectConnection connection, List<Sample> samples)
         {
             var eventItems = eventDataItems.Find(o => o.DeviceId == connection.DeviceId);
@@ -547,11 +581,12 @@ namespace TrakHound.TempServer
                 var ids = samples.Select(o => o.Id).Distinct();
                 foreach (var id in ids)
                 {
-                    lock(_lock)
+                    lock (_lock)
                     {
                         var i = currentSamples.FindIndex(o => o.DeviceId == connection.DeviceId && o.Id == id);
                         if (i >= 0) currentSamples.RemoveAt(i);
-                        currentSamples.Add(samples.Find(o => o.DeviceId == connection.DeviceId && o.Id == id));
+                        i = samples.FindIndex(o => o.DeviceId == connection.DeviceId && o.Id == id);
+                        if (i >= 0) currentSamples.Add(samples[i]);
                     }
                 }
             }
@@ -566,9 +601,12 @@ namespace TrakHound.TempServer
         {
             lock (_lock)
             {
-                var i = storedStatus.FindIndex(o => o.DeviceId == status.DeviceId);
-                if (i >= 0) storedStatus.RemoveAt(i);
-                storedStatus.Add(status);
+                if (Connections.Exists(o => o.DeviceId == status.DeviceId))
+                {
+                    var i = storedStatus.FindIndex(o => o.DeviceId == status.DeviceId);
+                    if (i >= 0) storedStatus.RemoveAt(i);
+                    storedStatus.Add(status);
+                }
             }
         }
 
@@ -582,7 +620,14 @@ namespace TrakHound.TempServer
                 if (!storedDevices.IsNullOrEmpty()) lock (_lock) Database.Write(storedDevices);
                 if (!storedComponents.IsNullOrEmpty()) lock (_lock) Database.Write(storedComponents);
                 if (!storedDataItems.IsNullOrEmpty()) lock (_lock) Database.Write(storedDataItems);
-                if (!storedSamples.IsNullOrEmpty()) lock (_lock) Database.Write(storedSamples.FindAll(x => x.Timestamp > lastBackupTime));
+                if (!storedSamples.IsNullOrEmpty())
+                {
+                    lock (_lock)
+                    {
+                        var newSamples = storedSamples.FindAll(x => x != null && x.Timestamp > lastBackupTime);
+                        if (!newSamples.IsNullOrEmpty()) Database.Write(newSamples);
+                    }
+                }
 
                 List<DeviceDefinition> safeDevices = null;
                 List<Sample> safeSamples = null;
@@ -596,23 +641,26 @@ namespace TrakHound.TempServer
                     // Only delete samples that have been updated within the TIMESPAN
                     foreach (var deviceId in safeDevices.Select(x => x.DeviceId))
                     {
-                        var ids = safeSamples.FindAll(x => x.DeviceId == deviceId).Select(x => x.Id).Distinct();
-                        foreach (var id in ids)
+                        var ids = safeSamples.FindAll(x => x != null && x.DeviceId == deviceId).Select(x => x.Id).Distinct();
+                        if (!ids.IsNullOrEmpty())
                         {
-                            // Find the last sample within before the TIMESPAN
-                            var expiredSamples = safeSamples.FindAll(x => x.DeviceId == deviceId && x.Id == id && x.Timestamp < DateTime.UtcNow.Subtract(TimeSpan.FromMilliseconds(TIMESPAN)));
-                            if (!expiredSamples.IsNullOrEmpty() && expiredSamples.Count > 1)
+                            foreach (var id in ids)
                             {
-                                var lastSample = expiredSamples.OrderBy(x => x.Timestamp).Last();
+                                // Find the last sample within before the TIMESPAN
+                                var expiredSamples = safeSamples.FindAll(x => x != null && x.DeviceId == deviceId && x.Id == id && x.Timestamp < DateTime.UtcNow.Subtract(TimeSpan.FromMilliseconds(TIMESPAN)));
+                                if (!expiredSamples.IsNullOrEmpty() && expiredSamples.Count > 1)
+                                {
+                                    var lastSample = expiredSamples.OrderBy(x => x.Timestamp).Last();
 
-                                // Delete all but the last Sample found before the TIMESPAN
-                                string QUERY_FORMAT = "DELETE FROM `samples` WHERE `id`='{0}' AND `timestamp` < {1}";
-                                string query = string.Format(QUERY_FORMAT, id, lastSample.Timestamp.ToUnixTime());
-                                Console.WriteLine(query);
-                                Database.ExecuteQuery(query);
+                                    // Delete all but the last Sample found before the TIMESPAN
+                                    string QUERY_FORMAT = "DELETE FROM `samples` WHERE `id`='{0}' AND `timestamp` < {1}";
+                                    string query = string.Format(QUERY_FORMAT, id, lastSample.Timestamp.ToUnixTime());
+                                    Console.WriteLine(query);
+                                    Database.ExecuteQuery(query);
 
-                                // Remove from Memory cache
-                                lock (_lock) safeSamples.RemoveAll(x => x.Timestamp < lastSample.Timestamp);
+                                    // Remove from Memory cache
+                                    lock (_lock) safeSamples.RemoveAll(x => x != null && x.Timestamp < lastSample.Timestamp);
+                                }
                             }
                         }
                     }

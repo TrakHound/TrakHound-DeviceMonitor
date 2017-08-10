@@ -35,9 +35,13 @@ namespace TrakHound.DeviceMonitor
         private static Logger log = LogManager.GetCurrentClassLogger();
 
         private System.Timers.Timer timespanUpdateTimer;
+        private System.Timers.Timer loadDeviceCompletedTimer;
         private System.Timers.Timer addDevicesUpdateTimer;
+        private System.Timers.Timer removeDevicesUpdateTimer;
+        private bool firstFindDevices = true;
 
         private List<TempServer.MTConnect.MTConnectConnection> addDeviceQueue = new List<TempServer.MTConnect.MTConnectConnection>();
+        private List<string> removeDeviceQueue = new List<string>();
 
         public static string _apiUrl = DEFAULT_API_URL;
         public static string _apiToken = null;
@@ -275,8 +279,6 @@ namespace TrakHound.DeviceMonitor
             LoadDevices();
 
             Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
-            overviewPage.Start();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -302,96 +304,96 @@ namespace TrakHound.DeviceMonitor
                 var connections = x.Result;
                 if (!connections.IsNullOrEmpty())
                 {
-                    // Get Saved Device Configurations
-                    var deviceConfigurations = Properties.Settings.Default.DeviceList;
-                    bool addAll = deviceConfigurations.IsNullOrEmpty();
-
-                    int newCount = 0;
-                    int maxNewDevices = 5;
-                    int newIndex = 0;
-
                     // Add each Device to SavedDeviceList
                     foreach (var connection in x.Result)
                     {
-                        // Get the Device Model from TrakHound Api
-                        var modelRequest = new Task<DeviceModel>(() => Model.Get(_apiUrl, connection.DeviceId, _apiToken));
-                        modelRequest.ContinueWith(y =>
-                        {
-                            var model = y.Result;
-                            if (model != null)
-                            {
-                                Dispatcher.BeginInvoke(new Action(() =>
-                                {
-                                    var listItem = new DeviceListItem(model);
-                                    int index = -1;
-
-                                    var config = deviceConfigurations.Find(o => o.DeviceId == model.DeviceId);
-                                    if (config != null)
-                                    {
-                                        listItem.Enabled = config.Enabled;
-                                        listItem.PerformanceEnabled = config.PerformanceEnabled;
-                                        listItem.QualityEnabled = config.QualityEnabled;
-                                        listItem.Configuration = config;
-                                        index = config.Index;
-                                    }
-                                    else
-                                    {
-                                        if (newCount < maxNewDevices)
-                                        {
-                                            config = new DeviceConfiguration();
-                                            config.DeviceId = model.DeviceId;
-                                            config.Enabled = true;
-                                            config.Index = newIndex;
-                                            index = newIndex;
-
-                                            listItem.Enabled = true;
-                                            listItem.PerformanceEnabled = true;
-                                            listItem.QualityEnabled = false;
-                                            listItem.Configuration = config;
-                                        }
-
-                                        newCount++;
-                                        newIndex++;
-                                    }
-
-                                    listItem.CheckedChanged += DeviceListItem_CheckedChanged;
-                                    DeviceListItems.Add(listItem);
-
-                                    if (!IsOptionsShown && newCount > maxNewDevices) OpenOptionsPage();
-
-                                    if (listItem.Enabled)
-                                    {
-                                        overviewPage.AddDevice(model, index);
-                                    }
-
-                                }), System.Windows.Threading.DispatcherPriority.Background, null);
-                            }
-                        });
-                        modelRequest.Start();
-
-                        Thread.Sleep(100);
+                        LoadDevice(connection.DeviceId);
                     }
-
-                    Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        overviewPage.SortDevices();
-                        SaveDeviceList();
-                        Loading = false;
-
-                    }), System.Windows.Threading.DispatcherPriority.Background, null);
                 }
                 else
                 {
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
                         Loading = false;
-                        OpenOptionsPage();
+                        if (!IsOptionsShown) OpenOptionsPage();
 
                     }), System.Windows.Threading.DispatcherPriority.Background, null);
                 }
             });
             connectionsRequest.Start();
         }
+
+        private void LoadDevice(string deviceId)
+        {
+            var deviceConfigurations = Properties.Settings.Default.DeviceList;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((o) => {
+
+                var model = Model.Get(_apiUrl, deviceId, _apiToken);
+                if (model != null)
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        var listItem = new DeviceListItem(model);
+                        listItem.RemoveClicked += DeviceList_RemoveClicked;
+                        int index = -1;
+
+                        var config = deviceConfigurations.Find(x => x.DeviceId == model.DeviceId);
+                        if (config != null)
+                        {
+                            listItem.Enabled = config.Enabled;
+                            listItem.PerformanceEnabled = config.PerformanceEnabled;
+                            listItem.QualityEnabled = config.QualityEnabled;
+                            listItem.Configuration = config;
+                            index = config.Index;
+                        }
+                        else
+                        {
+                            config = new DeviceConfiguration();
+                            config.DeviceId = model.DeviceId;
+                            config.Enabled = true;
+
+                            listItem.Enabled = true;
+                            listItem.PerformanceEnabled = true;
+                            listItem.QualityEnabled = false;
+                            listItem.Configuration = config;
+                        }
+
+                        listItem.CheckedChanged += DeviceListItem_CheckedChanged;
+                        DeviceListItems.Add(listItem);
+
+                        if (listItem.Enabled)
+                        {
+                            overviewPage.AddDevice(model, index);
+                        }
+
+                        if (loadDeviceCompletedTimer != null) loadDeviceCompletedTimer.Stop();
+                        loadDeviceCompletedTimer = new System.Timers.Timer();
+                        loadDeviceCompletedTimer.Interval = 2000;
+                        loadDeviceCompletedTimer.Elapsed += LoadDeviceCompletedTimer_Elapsed;
+                        loadDeviceCompletedTimer.Start();
+
+                    }), System.Windows.Threading.DispatcherPriority.Background, null);
+                }
+            }));
+        }
+
+        private void LoadDeviceCompletedTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            var timer = (System.Timers.Timer)sender;
+            timer.Stop();
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                overviewPage.SortDevices();
+                SaveDeviceList();
+                Loading = false;
+
+                overviewPage.Start();
+
+            }), System.Windows.Threading.DispatcherPriority.Background, null);
+        }
+
 
         #region "Timespan"
 
@@ -519,7 +521,7 @@ namespace TrakHound.DeviceMonitor
         private void FindDevices_Click(object sender, RoutedEventArgs e)
         {
             OpenFindDevicesPage();
-            SearchForDevices();
+            if (firstFindDevices) SearchForDevices();
         }
 
         #endregion
@@ -533,7 +535,7 @@ namespace TrakHound.DeviceMonitor
         private void FindDevices_Clicked(TrakHound_UI.Button bt)
         {
             OpenFindDevicesPage();
-            SearchForDevices();
+            if (firstFindDevices) SearchForDevices();
         }
 
         private void Back_Clicked(TrakHound_UI.Button bt) { HideMenu(); }
@@ -719,6 +721,16 @@ namespace TrakHound.DeviceMonitor
 
         private void OpenConfigurator_Clicked(TrakHound_UI.Button bt) { OpenDeviceConfigurator(); }
 
+        private void DeviceList_RemoveClicked(DeviceListItem item)
+        {
+            if (MessageBox.Show("Are you sure you want to remove this device?", "Remove Device", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                RemoveServerDevice(item.DeviceId);
+                DeviceListItems.Remove(item);
+                overviewPage.RemoveDevice(item.DeviceId);
+            }
+        }
+
         #endregion
 
         #region "Zoom"
@@ -848,6 +860,7 @@ namespace TrakHound.DeviceMonitor
             Properties.Settings.Default.Save();
         }
 
+
         private void SearchForDevices_Clicked(TrakHound_UI.Button bt)
         {
             SearchForDevices();
@@ -872,9 +885,11 @@ namespace TrakHound.DeviceMonitor
                     var json = response.Content;
                     if (!string.IsNullOrEmpty(json))
                     {
-                        var obj = Json.Convert.FromJson<List<TrakHound.TempServer.MTConnect.MTConnectConnection>>(json);
+                        var obj = Json.Convert.FromJson<List<TempServer.MTConnect.MTConnectConnection>>(json);
                         if (obj != null) deviceItems.AddRange(obj);
                     }
+
+                    firstFindDevices = false;
                 }
 
                 Dispatcher.BeginInvoke(new Action(() =>
@@ -906,8 +921,9 @@ namespace TrakHound.DeviceMonitor
 
         private void FindDevicesAddAll_Clicked(TrakHound_UI.Button bt)
         {
-            AddDevicesToServer(MTConnectDeviceItems.ToList());
+            UpdateServerDevices(MTConnectDeviceItems.ToList());
         }
+
 
         private void AddMTConnectConnection(TempServer.MTConnect.MTConnectConnection connection)
         {
@@ -926,46 +942,132 @@ namespace TrakHound.DeviceMonitor
             var timer = (System.Timers.Timer)sender;
             timer.Stop();
 
-            AddDevicesToServer(addDeviceQueue.ToList());
+            UpdateServerDevices(addDeviceQueue.ToList());
             addDeviceQueue.Clear();
         }
 
-        private void AddDevicesToServer(List<TempServer.MTConnect.MTConnectConnection> devices)
+        private void RemoveServerDevice(string deviceId)
+        {
+            removeDeviceQueue.Add(deviceId);
+
+            if (removeDevicesUpdateTimer != null) removeDevicesUpdateTimer.Stop();
+
+            removeDevicesUpdateTimer = new System.Timers.Timer();
+            removeDevicesUpdateTimer.Interval = 2000;
+            removeDevicesUpdateTimer.Elapsed += RemoveDevicesUpdateTimer_Elapsed;
+            removeDevicesUpdateTimer.Start();
+        }
+
+        private void RemoveDevicesUpdateTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            var timer = (System.Timers.Timer)sender;
+            timer.Stop();
+
+            RemoveServerDevices(removeDeviceQueue.ToList());
+            removeDeviceQueue.Clear();
+        }
+
+
+        private void UpdateServerDevices(List<TempServer.MTConnect.MTConnectConnection> devices)
         {
             if (!devices.IsNullOrEmpty())
             {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    Loading = true;
+                }));
+                
                 ThreadPool.QueueUserWorkItem(new WaitCallback((o) =>
                 {
-                    var baseUrl = "http://localhost:8479/";
-                    var client = new RestClient(baseUrl);
-                    var request = new RestRequest(Method.GET);
-                    var response = client.Execute(request);
-                    if (response != null && response.StatusCode == HttpStatusCode.OK)
+                    try
                     {
-                        var json = response.Content;
-                        if (!string.IsNullOrEmpty(json))
+                        var baseUrl = "http://localhost:8479/";
+                        var client = new RestClient(baseUrl);
+                        var request = new RestRequest(Method.GET);
+                        var response = client.Execute(request);
+                        if (response != null && response.StatusCode == HttpStatusCode.OK)
                         {
-                            var config = Json.Convert.FromJson<TempServer.Configuration>(json);
-                            if (config != null)
+                            var json = response.Content;
+                            if (!string.IsNullOrEmpty(json))
                             {
-                                foreach (var device in devices)
+                                var config = Json.Convert.FromJson<TempServer.Configuration>(json);
+                                if (config != null)
                                 {
-                                    config.Devices.Add(device);
-                                }
+                                    foreach (var device in devices)
+                                    {
+                                        // Find the device using the Device ID
+                                        var i = config.Devices.FindIndex(x => x.DeviceId == device.DeviceId);
+                                        if (i >= 0)
+                                        {
+                                            config.Devices.RemoveAt(i);
+                                            config.Devices.Insert(i, device);
+                                        }
+                                        else config.Devices.Add(device);
+                                    }
 
-                                request = new RestRequest(Method.POST);
-                                json = Json.Convert.ToJson(config);
-                                request.AddParameter("text/xml", json, ParameterType.RequestBody);
-                                response = client.Execute(request);
-                                if (response == null || response.StatusCode != HttpStatusCode.OK)
-                                {
+                                    request = new RestRequest(Method.POST);
+                                    json = Json.Convert.ToJson(config);
+                                    request.AddParameter("text/xml", json, ParameterType.RequestBody);
+                                    response = client.Execute(request);
 
+                                    Thread.Sleep(2000);
 
+                                    foreach (var device in devices)
+                                    {
+                                        LoadDevice(device.DeviceId);
+                                    }
                                 }
                             }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        log.Error(ex);
+                    }
                 }));
+            }
+        }
+
+        private void RemoveServerDevices(List<string> deviceIds)
+        {
+            if (!deviceIds.IsNullOrEmpty())
+            {
+                try
+                {
+                    ThreadPool.QueueUserWorkItem(new WaitCallback((o) =>
+                    {
+                        var baseUrl = "http://localhost:8479/";
+                        var client = new RestClient(baseUrl);
+                        var request = new RestRequest(Method.GET);
+                        var response = client.Execute(request);
+                        if (response != null && response.StatusCode == HttpStatusCode.OK)
+                        {
+                            var json = response.Content;
+                            if (!string.IsNullOrEmpty(json))
+                            {
+                                var config = Json.Convert.FromJson<TempServer.Configuration>(json);
+                                if (config != null)
+                                {
+                                    foreach (var deviceId in deviceIds)
+                                    {
+                                        // Find the device using the Device ID
+                                        var i = config.Devices.FindIndex(x => x.DeviceId == deviceId);
+                                        if (i >= 0) config.Devices.RemoveAt(i);
+                                    }
+
+                                    request = new RestRequest(Method.POST);
+                                    json = Json.Convert.ToJson(config);
+                                    request.AddParameter("text/xml", json, ParameterType.RequestBody);
+                                    response = client.Execute(request);
+                                }
+                            }
+                        }
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex);
+                }
             }
         }
 

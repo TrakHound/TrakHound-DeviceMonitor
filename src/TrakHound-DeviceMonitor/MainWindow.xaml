@@ -46,8 +46,8 @@
         <!--Toolbars-->
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.Resources>
                 <Style TargetType="ui:Button" BasedOn="{StaticResource ToolBar_Button}"/>
@@ -68,28 +68,36 @@
             </StackPanel>
 
             <!--Right Toolbar-->
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+
+                <TextBlock VerticalAlignment="Center" Margin="20,0,5,0">
+                    <Run Text="{Binding DeviceListItems.Count, Mode=OneWay}" FontSize="16" FontWeight="Bold" Foreground="#0080ff"/>
+                    <Run Text="Devices" FontSize="12" Foreground="#666666"/>
+                </TextBlock>
+
+                <!--Separator-->
+                <Rectangle Fill="{StaticResource Border}" Width="1" Margin="10,5"/>
 
                 <!--Selected Timespan-->
-                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                <StackPanel Orientation="Horizontal">
 
                     <!--From-->
-                    <ui:Button Text="From" Style="{StaticResource ToolBar_Button}" VerticalAlignment="Center" Margin="0,0,10,0" ToolTip="Reset (From) time back to Default" Clicked="ResetFromTime_Clicked"/>
+                    <ui:Button Text="From" Style="{StaticResource ToolBar_Button}" TextForeground="#666666" VerticalAlignment="Center" Margin="0,0,10,0" ToolTip="Reset (From) time back to Default" Clicked="ResetFromTime_Clicked"/>
                     <ComboBox MinWidth="150" Height="25" ItemsSource="{Binding FromDateTimes}" SelectedValue="{Binding FromTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
 
                     <!--To-->
-                    <ui:Button Text="To" Style="{StaticResource ToolBar_Button}" VerticalAlignment="Center" Margin="10,0,0,0" ToolTip="Reset (To) time back to Default" Clicked="ResetToTime_Clicked"/>
+                    <ui:Button Text="To" Style="{StaticResource ToolBar_Button}" TextForeground="#666666" VerticalAlignment="Center" Margin="10,0,0,0" ToolTip="Reset (To) time back to Default" Clicked="ResetToTime_Clicked"/>
                     <ComboBox MinWidth="150" Height="25" ItemsSource="{Binding ToDateTimes}" SelectedValue="{Binding ToTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
 
                 </StackPanel>
 
 
                 <!--Separator-->
-                <Rectangle Fill="{StaticResource Border}" Width="1" Margin="10,5"/>
+                <Rectangle Fill="{StaticResource Border}" Width="1" Margin="15,5"/>
 
                 
                 <!--Zoom Level-->
-                <TextBlock Text="Zoom" FontSize="10" Foreground="{StaticResource Text_Light}" VerticalAlignment="Center"/>
+                <TextBlock Text="Zoom" FontSize="12" Foreground="{StaticResource Text_Light}" VerticalAlignment="Center"/>
                 
                 <!--Zoom Slider-->
                 <Slider Width="100" Value="{Binding ZoomLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0.25" Maximum="5" LargeChange="0.1" TickFrequency="0.5" TickPlacement="BottomRight" AutomationProperties.HelpText="Page Zoom" Margin="20,0,0,0"/>
@@ -186,7 +194,10 @@
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
-                    <ui:Spinner Width="50" Height="50" Foreground="#0080ff"/>
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ui:Spinner Width="50" Height="50" Foreground="#0080ff"/>
+                        <TextBlock Text="Loading Devices.." Foreground="#666666" FontSize="14" TextAlignment="Center" Margin="0,20,0,0"/>
+                    </StackPanel>
                 </Border>
 
                 <!--Shaded Panel-->
@@ -425,7 +436,9 @@
                                             <TextBlock Text="Devices to Monitor" Margin="0,0,20,0" FontSize="12" VerticalAlignment="Center"/>
 
                                             <ui:Button Text="Enable All" Margin="0,0,10,0" Style="{StaticResource Button_Transparent_Background}" Clicked="DeviceList_EnableAll_Clicked"/>
-                                            <ui:Button Text="Disable All" Style="{StaticResource Button_Transparent_Background}" Clicked="DeviceList_DisableAll_Clicked"/>
+                                            <ui:Button Text="Disable All" Margin="0,0,10,0" Style="{StaticResource Button_Transparent_Background}" Clicked="DeviceList_DisableAll_Clicked"/>
+
+                                            <ui:Button Text="Search for Devices" Clicked="SearchForDevices_Clicked" Style="{StaticResource Button_Accent_Background}"/>
                                         </StackPanel>
 
                                         <Rectangle Fill="#20000000" Height="1" Margin="0,5"/>
@@ -688,7 +701,7 @@
                                         </Border.Style>
                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <ui:Spinner Width="50" Height="50" Foreground="#0080ff" HorizontalAlignment="Center" Margin="0,0,0,20"/>
-                                            <TextBlock Text="Searching for MTConnect devices on the network. This make take a few minutes." Foreground="#666" FontSize="14" TextAlignment="Center" TextWrapping="Wrap"/>
+                                            <TextBlock Text="Searching for MTConnect devices on the network. This may take a few minutes." Foreground="#666666" FontSize="14" TextAlignment="Center" TextWrapping="Wrap"/>
                                         </StackPanel>
                                     </Border>
 

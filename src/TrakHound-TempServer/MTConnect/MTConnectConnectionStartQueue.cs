@@ -32,7 +32,7 @@ namespace TrakHound.TempServer.MTConnect
 
         public MTConnectConnectionStartQueue()
         {
-            Delay = 1000;
+            Delay = 250;
         }
 
         public void Start()

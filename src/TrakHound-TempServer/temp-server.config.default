@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TempServer>
+<TempServer deviceFinderEnabled="false">
 
   <Devices>
     <Device deviceId="9e02ef24-6afa-4b07-8e2b-acf1a28fead6" address="agent.mtconnect.org" port="80" deviceName="VMC-3Axis" interval="500" />

@@ -24,6 +24,9 @@ namespace TrakHound.DeviceMonitor
         public delegate void CheckedHandler(DeviceListItem item, bool value);
         public event CheckedHandler CheckedChanged;
 
+        public delegate void RemoveClickedHandler(DeviceListItem item);
+        public event RemoveClickedHandler RemoveClicked;
+
 
         public bool SuppressCheckedChanged { get; set; }
 
@@ -346,7 +349,10 @@ namespace TrakHound.DeviceMonitor
 
             return null;
         }
-    }
 
-    
+        private void Remove_Clicked(TrakHound_UI.Button bt)
+        {
+            RemoveClicked?.Invoke(this);
+        }
+    }
 }

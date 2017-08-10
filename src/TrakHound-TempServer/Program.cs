@@ -101,11 +101,18 @@ namespace TrakHound.TempServer
                 log.Info("Configuration file read from '" + configPath + "'");
                 log.Info("---------------------------");
 
-                StartServers(config);
-
+                // Start Configuration Server
                 configurationServer = new ConfigurationServer();
                 configurationServer.ConfigurationUpdated += ConfigurationServer_ConfigurationUpdated;
                 configurationServer.Start();
+
+                // Create a new RestServer
+                restServer = new RestServer(config);
+                restServer.Start();
+
+                // Create a new Server
+                server = new Server(config);
+                server.Start();
             }
             else
             {
@@ -116,37 +123,45 @@ namespace TrakHound.TempServer
             }
         }
 
-        private static void StartServers(Configuration config)
-        {
-            // Create a new Server
-            server = new Server(config);
-            server.Start();
-
-            // Create a new RestServer
-            restServer = new RestServer(config);
-            restServer.Start();
-        }
-
         private static void ConfigurationServer_ConfigurationUpdated(Configuration config)
         {
             string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Configuration.FILENAME);
             config.Save(configPath);
 
-            StopServers();
-            StartServers(config);
+            if (server != null)
+            {
+                if (config.Devices.IsNullOrEmpty())
+                {
+                    server.StopMTConnectDevices();
+                }
+                else
+                {
+                    foreach (var device in config.Devices)
+                    {
+                        if (!server.Connections.Exists(o => o.DeviceId == device.DeviceId))
+                        {
+                            server.StartMTConnectConnection(device);
+                        }
+                    }
+
+                    foreach (var connection in server.Connections)
+                    {
+                        if (!config.Devices.Exists(o => o.DeviceId == connection.DeviceId))
+                        {
+                            server.StopMTConnectConnection(connection.DeviceId);
+                        }
+                    }
+                }
+            }
         }
 
         public static void Stop()
         {
-            StopServers();
+            if (server != null) server.Stop();
+            if (server != null) restServer.Stop();
             if (configurationServer != null) configurationServer.Stop();
         }
 
-        private static void StopServers()
-        {
-            if (server != null) server.Stop();
-            if (server != null) restServer.Stop();
-        }
 
         private static void InstallService()
         {

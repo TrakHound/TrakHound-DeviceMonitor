@@ -44,6 +44,10 @@
     <ApplicationIcon>Resources\tempserver_02.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MTConnect-NET, Version=2.6.1.25011, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MTConnect.NET.2.6.1.25011\lib\net40\MTConnect-NET.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\TrakHound-Community\src\packages\Newtonsoft.Json.10.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -78,6 +82,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="TrakHound-Api, Version=1.11.6.25627, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TrakHound-Api.1.11.6.25627\lib\net40\TrakHound-Api.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
@@ -139,20 +147,6 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\MTConnect.NET\src\MTConnect.NET.csproj">
-      <Project>{d7ece6e3-647d-4f74-b63e-c509153eb4b7}</Project>
-      <Name>MTConnect.NET</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\TrakHound-Api\src\TrakHound-Api.csproj">
-      <Project>{721bf90b-e72e-4fdf-bb06-3945e25e6dbc}</Project>
-      <Name>TrakHound-Api</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\TrakHound-PredixServer\src\WebSocketSharp\websocket-sharp.csproj">
-      <Project>{b357bac7-529e-4d81-a0d2-71041b19c8de}</Project>
-      <Name>websocket-sharp</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

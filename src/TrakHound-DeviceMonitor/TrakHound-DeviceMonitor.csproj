@@ -65,6 +65,10 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="TrakHound-Api, Version=1.11.6.25627, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TrakHound-Api.1.11.6.25627\lib\net40\TrakHound-Api.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -269,10 +273,6 @@
     <Resource Include="Resources\Power_01_100px.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\TrakHound-Api\src\TrakHound-Api.csproj">
-      <Project>{721bf90b-e72e-4fdf-bb06-3945e25e6dbc}</Project>
-      <Name>TrakHound-Api</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\TrakHound-TempServer\consolidated\TempServer\TrakHound-TempServer.csproj">
       <Project>{69e6a916-a48a-4f79-a2f0-311a30fbbfe2}</Project>
       <Name>TrakHound-TempServer</Name>
@@ -316,6 +316,11 @@
     <Resource Include="Resources\Add_01.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>cd $(ProjectDir)../../installer
+gulp
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
