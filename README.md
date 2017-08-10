@@ -1,22 +1,24 @@
 ![TrakHound DeviceMonitor](images/devicemonitor-logo-full-75px.png)
 <br>
 <br>
-TrakHound DeviceMonitor is used to display near realtime status data collected from the TrakHound v2 system.
+TrakHound DeviceMonitor is a fully standalone dashboard for viewing MTConnect data from industrial CNC equipment.
 
-Designed to be kept on a PC desktop, the TrakHound DeviceMonitor app is great for shop managers, engineers, programmers, maintenance, etc. to know exactly what their machines are doing throughout the day.
+Get started with IIoT by running the TrakHound DeviceMonitor dashboard to view a rolling 24 hour window of realtime data from your equipment.
 
-<table style="width:100%">
- 
-  <tr>
-    <td><img src="images/devices-01.PNG"/></td>
-    <td><img src="images/options-local-01.png"/></td>
-    <td><img src="images/login-01.png"/></td>
-  </tr>
-  
-</table> 
+- Easy installation
+- No databases to setup
+- Automatically find MTConnect compatible devices on your network
+- Easy to read dashboard
+- View OEE and part count for the past 24 hours
+
+![Overview](images/overview-02.PNG)
+
+![Options](images/options-02.PNG)
+
+![Find Devices](images/find-devices-01.PNG)
+
 
 **Requirements**
 - MTConnect compatible device(s)
-- TrakHound DataClient
-- TrakHound Data Hosting plan (OR) TrakHound DataServer & AnalyticsServer installed on the local network
+- Microsoft .NET 4.0 or newer
 
