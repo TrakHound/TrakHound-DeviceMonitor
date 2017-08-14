@@ -29,7 +29,7 @@
         </Grid.Style>
 
         <!--Toolbar-->
-        <!--<Grid Height="40" VerticalAlignment="Top">
+        <Grid Height="40" VerticalAlignment="Top">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -52,7 +52,7 @@
             <ui:Button Clicked="IndexUp_Clicked" Image="/TrakHound-DeviceMonitor;component/Resources/Carrot_Arrow_Up_01.png"/>
             <ui:Button Grid.Row="1" Clicked="IndexDown_Clicked" Image="/TrakHound-DeviceMonitor;component/Resources/Carrot_Arrow_Down_01.png"/>
 
-        </Grid>-->
+        </Grid>
         
         <!--Description-->
         <StackPanel Grid.Column="1" VerticalAlignment="Center">

@@ -120,7 +120,7 @@
             <Grid>
 
                 <!--Overview-->
-                <overview:Page x:Name="overviewPage" ZoomLevel="{Binding ZoomLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <overview:Page x:Name="overviewPage" ZoomLevel="{Binding ZoomLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IndexChanged="Page_IndexChanged">
                     <overview:Page.Style>
                         <Style TargetType="overview:Page">
                             <Setter Property="Visibility" Value="Collapsed"/>

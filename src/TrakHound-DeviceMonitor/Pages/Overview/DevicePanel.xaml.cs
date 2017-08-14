@@ -332,10 +332,13 @@ namespace TrakHound.DeviceMonitor.Pages.Overview
 
             if (samplesStream != null) samplesStream.Stop();
             samplesStream = null;
+
             if (activityStream != null) activityStream.Stop();
             activityStream = null;
+
             if (alarmStream != null) alarmStream.Stop();
             alarmStream = null;
+
             if (oeeStream != null) oeeStream.Stop();
             oeeStream = null;
         }
@@ -426,10 +429,8 @@ namespace TrakHound.DeviceMonitor.Pages.Overview
                         obj = model.GetDataItems().Find(o => o.Type == "CONTROLLER_MODE");
                         if (obj != null) statusPanel.ControllerModeId = obj.Id;
 
-
                         // Get Alarm Condition IDs
                         statusPanel.AlarmIds.AddRange(model.GetDataItems().FindAll(o => o.Category == "CONDITION").Select(o => o.Id));
-
 
                         // Get Program ID
                         obj = model.GetDataItems().Find(o => o.Type == "PROGRAM" && string.IsNullOrEmpty(o.SubType));
@@ -439,11 +440,9 @@ namespace TrakHound.DeviceMonitor.Pages.Overview
                         obj = model.GetDataItems().Find(o => o.Type == "MESSAGE");
                         if (obj != null) statusPanel.MessageId = obj.Id;
 
-
                         // Feedrate Override
                         obj = model.GetDataItems().Find(o => (o.Type == "PATH_FEEDRATE_OVERRIDE" && o.SubType == "PROGRAMMED") || (o.Type == "PATH_FEEDRATE" && o.Units == "PERCENT"));
                         if (obj != null) statusPanel.FeedrateOverrideId = obj.Id;
-
 
                         paths = model.GetComponents().FindAll(o => o.Type == "Path");
                         foreach (var path in paths)

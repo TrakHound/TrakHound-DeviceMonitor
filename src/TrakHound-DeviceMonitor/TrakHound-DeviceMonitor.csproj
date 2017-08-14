@@ -40,6 +40,9 @@
   <PropertyGroup>
     <ApplicationIcon>Resources\devicemonitor_logo.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Installer|AnyCPU'">
+    <OutputPath>bin\Installer\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
@@ -273,13 +276,13 @@
     <Resource Include="Resources\Power_01_100px.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\TrakHound-TempServer\consolidated\TempServer\TrakHound-TempServer.csproj">
-      <Project>{69e6a916-a48a-4f79-a2f0-311a30fbbfe2}</Project>
-      <Name>TrakHound-TempServer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\TrakHound-UI\TrakHound-UI.csproj">
       <Project>{b4c046ff-4a7d-4059-aaf8-713059ccf0f3}</Project>
       <Name>TrakHound-UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TrakHound-TempServer\TrakHound-TempServer.csproj">
+      <Project>{69e6a916-a48a-4f79-a2f0-311a30fbbfe2}</Project>
+      <Name>TrakHound-TempServer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -317,8 +320,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>cd $(ProjectDir)../../installer
+    <PostBuildEvent>if $(ConfigurationName) == Installer (
+cd $(ProjectDir)../../installer
 gulp
+)
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -87,7 +87,7 @@ namespace TrakHound.DeviceMonitor.Pages.Overview
                 panel.Index = index;
                 panel.IndexChanged += Panel_IndexChanged;
                 Panels.Add(panel);
-                System.Threading.Thread.Sleep(200);
+                Panels.Sort();
                 if (started) panel.Start(From, To);
             }
         }
@@ -127,7 +127,40 @@ namespace TrakHound.DeviceMonitor.Pages.Overview
         public void UpdateDeviceIndex(string deviceId, int index)
         {
             int i = Panels.ToList().FindIndex(o => o.DeviceId == deviceId);
-            if (i >= 0) Panels[i].Index = index;
+            if (i >= 0)
+            {
+                bool moveUp = Panels[i].Index > index;
+                Panels[i].Index = index;
+
+                Console.WriteLine("UpdateDeviceIndex() : " + deviceId + " = " + index + " : Changed");
+
+                foreach (var panel in Panels)
+                {
+                    if (panel.DeviceId != deviceId)
+                    {
+                        if (moveUp)
+                        {
+                            if (panel.Index >= index)
+                            {
+                                //Console.WriteLine("UpdateDeviceIndex() : " + panel.DeviceId + " = " + panel.Index + " : BEFORE");
+                                panel.Index++;
+                            }
+                        }
+                        else
+                        {
+                            if (panel.Index <= index)
+                            {
+                                //Console.WriteLine("UpdateDeviceIndex() : " + panel.DeviceId + " = " + panel.Index + " : BEFORE");
+                                panel.Index--;
+                            }
+                        }
+
+                        Console.WriteLine("UpdateDeviceIndex() : " + panel.DeviceId + " = " + panel.Index + " : AFTER");
+                    }
+                }
+
+                Panels.Sort();
+            }
         }
 
         private void Panel_IndexChanged(string deviceId, int index)

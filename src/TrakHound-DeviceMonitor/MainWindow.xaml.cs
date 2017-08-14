@@ -385,6 +385,18 @@ namespace TrakHound.DeviceMonitor
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
+                overviewPage.Panels.Sort();
+                int i = 0;
+
+                foreach (var panel in overviewPage.Panels)
+                {
+                    var config = Properties.Settings.Default.DeviceList.Find(o => o.DeviceId == panel.DeviceId);
+                    if (config != null) config.Index = i;
+
+                    panel.Index = i;
+                    i++;
+                }
+
                 overviewPage.SortDevices();
                 SaveDeviceList();
                 Loading = false;
@@ -832,27 +844,25 @@ namespace TrakHound.DeviceMonitor
                     int oldIndex = modifiedConfig.Index;
                     int newIndex = index;
 
-                    if (oldIndex < index) // Index Down
+                    if ((newIndex < oldIndex && newIndex >= 0) || (newIndex > oldIndex && newIndex <= overviewPage.Panels.Count - 1))
                     {
-                        var configNext = configs.Find(o => o.Index == oldIndex + 1);
-                        if (configNext != null)
-                        {
-                            configNext.Index = index - 1;
-                            overviewPage.UpdateDeviceIndex(configNext.DeviceId, configNext.Index);
-                        }
-                    }
-                    else // Index Up
-                    {
-                        var configBefore = configs.Find(o => o.Index == oldIndex - 1);
-                        if (configBefore != null)
-                        {
-                            configBefore.Index = index + 1;
-                            overviewPage.UpdateDeviceIndex(configBefore.DeviceId, configBefore.Index);
-                        }
-                    }
+                        modifiedConfig.Index = newIndex;
 
-                    modifiedConfig.Index = Math.Max(0, Math.Min(index, configs.FindAll(o => o.Enabled).Count - 1));
-                    overviewPage.UpdateDeviceIndex(modifiedConfig.DeviceId, modifiedConfig.Index);
+                        var i = overviewPage.Panels.ToList().FindIndex(o => o.DeviceId == deviceId);
+                        if (i >= 0) overviewPage.Panels[i].Index = newIndex;
+
+                        // Move panel above, below
+                        foreach (var panel in overviewPage.Panels)
+                        {
+                            if (panel.DeviceId != deviceId && panel.Index == newIndex)
+                            {
+                                var otherConfig = configs.Find(o => o.DeviceId == panel.DeviceId);
+                                if (otherConfig != null) otherConfig.Index = oldIndex;
+
+                                panel.Index = oldIndex;
+                            }
+                        }
+                    }
                 }
             }
 

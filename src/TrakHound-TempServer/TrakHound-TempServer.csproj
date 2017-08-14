@@ -43,6 +43,9 @@
   <PropertyGroup>
     <ApplicationIcon>Resources\tempserver_02.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Installer|AnyCPU'">
+    <OutputPath>bin\Installer\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MTConnect-NET, Version=2.6.1.25011, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MTConnect.NET.2.6.1.25011\lib\net40\MTConnect-NET.dll</HintPath>
