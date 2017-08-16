@@ -520,7 +520,7 @@ namespace TrakHound.DeviceMonitor.Pages.Overview
 
         private void StartSamplesStream()
         {
-            samplesStream = new Samples.Stream(MainWindow._apiUrl, _deviceId, 1000, dataItemIds.ToArray(), MainWindow._apiToken);
+            samplesStream = new Samples.Stream(MainWindow._apiUrl, _deviceId, 2000, dataItemIds.ToArray(), MainWindow._apiToken);
             samplesStream.SampleReceived += Stream_SampleReceived;
             samplesStream.Start();
         }
@@ -536,7 +536,7 @@ namespace TrakHound.DeviceMonitor.Pages.Overview
 
         private void StartAlarmStream()
         {
-            alarmStream = new Alarms.Stream(MainWindow._apiUrl, _deviceId, 2000, MainWindow._apiToken);
+            alarmStream = new Alarms.Stream(MainWindow._apiUrl, _deviceId, 5000, MainWindow._apiToken);
             alarmStream.AlarmReceived += Stream_AlarmReceived;
             alarmStream.Start();
         }

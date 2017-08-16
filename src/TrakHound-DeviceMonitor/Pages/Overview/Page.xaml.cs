@@ -132,30 +132,18 @@ namespace TrakHound.DeviceMonitor.Pages.Overview
                 bool moveUp = Panels[i].Index > index;
                 Panels[i].Index = index;
 
-                Console.WriteLine("UpdateDeviceIndex() : " + deviceId + " = " + index + " : Changed");
-
                 foreach (var panel in Panels)
                 {
                     if (panel.DeviceId != deviceId)
                     {
                         if (moveUp)
                         {
-                            if (panel.Index >= index)
-                            {
-                                //Console.WriteLine("UpdateDeviceIndex() : " + panel.DeviceId + " = " + panel.Index + " : BEFORE");
-                                panel.Index++;
-                            }
+                            if (panel.Index >= index) panel.Index++;
                         }
                         else
                         {
-                            if (panel.Index <= index)
-                            {
-                                //Console.WriteLine("UpdateDeviceIndex() : " + panel.DeviceId + " = " + panel.Index + " : BEFORE");
-                                panel.Index--;
-                            }
+                            if (panel.Index <= index) panel.Index--;
                         }
-
-                        Console.WriteLine("UpdateDeviceIndex() : " + panel.DeviceId + " = " + panel.Index + " : AFTER");
                     }
                 }
 

@@ -240,9 +240,6 @@
     <Resource Include="Resources\Back_01.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\dashboard-logo-full_75px.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Forward_01.png" />
   </ItemGroup>
   <ItemGroup>
@@ -256,9 +253,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Grid_01.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\dashboard_logo.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Plus_04.png" />

@@ -136,9 +136,6 @@
   <data name="CheckMark_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CheckMark_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="dashboard_logo_full_75px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\dashboard-logo-full_75px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Dock_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Dock_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -207,9 +204,6 @@
   </data>
   <data name="History_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\History_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="dashboard_logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\dashboard_logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Minus_04" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Minus_04.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
